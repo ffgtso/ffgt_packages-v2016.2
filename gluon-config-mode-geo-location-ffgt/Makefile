@@ -26,12 +26,11 @@ endef
 
 define Build/Compile
 	$(call GluonBuildI18N,gluon-config-mode-geo-location-ffgt,i18n)
-	#$(call GluonSrcDiet,./luasrc,$(PKG_BUILD_DIR)/luadest/)
+	$(call GluonSrcDiet,./luasrc,$(PKG_BUILD_DIR)/luadest/)
 endef
 
 define Package/gluon-config-mode-geo-location-ffgt/install
-	#$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
-	$(CP) $(PKG_BUILD_DIR)/luasrc/* $(1)/
+	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
 	$(call GluonInstallI18N,gluon-config-mode-geo-location-ffgt,$(1))
 endef
 
