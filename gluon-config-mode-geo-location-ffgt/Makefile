@@ -15,6 +15,7 @@ define Package/gluon-config-mode-geo-location-ffgt
   CATEGORY:=Gluon
   TITLE:=Set geographic location of a node, FFGT version
   DEPENDS:=gluon-config-mode-core-virtual +gluon-node-info
+  PROVIDES:=gluon-config-mode-geo-location
 endef
 
 define Build/Prepare
