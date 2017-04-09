@@ -1,0 +1,23 @@
+config site 'gt8'
+    option path '/lib/gluon/sitefiles/gt8.json'
+    option sitename  'Freifunk Kreis GT (Nordkreis)'
+
+config site 'gto'
+    option path '/lib/gluon/sitefiles/gto.json'
+    option sitename  'Freifunk Kreis GT (Südkreis)'
+
+config site 'gut'
+    option path '/lib/gluon/sitefiles/gut.json'
+    option sitename  'Freifunk Kreis GT (Stadt GT)'
+
+config site 'rhw'
+    option path '/lib/gluon/sitefiles/rhw.json'
+    option sitename  'Freifunk Kreis GT (Rheda-Wiedenbrück)'
+
+config site 'wrz'
+    option path '/lib/gluon/sitefiles/wrz.json'
+    option sitename  'Freifunk Müritz'
+
+config site 'zzz'
+    option path '/lib/gluon/sitefiles/zzz.json'
+    option sitename  'Freifunk, powered by 4830.org'
