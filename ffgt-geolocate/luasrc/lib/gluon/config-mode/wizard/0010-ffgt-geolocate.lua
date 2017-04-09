@@ -14,7 +14,7 @@ function M.section(form)
     local s = form:section(cbi.SimpleSection, nil,
     [[<b>Es sind keine Koordinaten hinterlegt.</b> Bitte trage sie ein oder versuche die
     automatische Lokalisierung (anhand der empfangenen Funknetze bzw. der IP-Adresse)
-    &uuml;ber die Schaltfl&auml;che "Geolocate" oben. Bitte beachte, da&szlig; Dein
+    &uuml;ber <a href="admin/geolocate">diesen Link</a>. Bitte beachte, da&szlig; Dein
     Knoten Internet-Zugang haben mu&szlig;.]])
   elseif (lat == "51") and (lon == "9") then
     local s = form:section(cbi.SimpleSection, nil,

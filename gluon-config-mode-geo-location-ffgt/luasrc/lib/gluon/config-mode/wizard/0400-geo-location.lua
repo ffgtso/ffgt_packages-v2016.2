@@ -16,6 +16,16 @@ local function show_altitude()
 end
 
 function M.section(form)
+  os.execute('/lib/gluon/config-mode/check4online.sh')
+  if not fs.access("/tmp/is_online") then
+    local s = form:section(cbi.SimpleSection, nil, [[<b>Keine Internetverbindung!</b>
+       Bitte schlie&szlig;e den Knoten &uuml;ber den <i>blauen</i> bzw. WAN-Port an Deinen
+       Internetrouter an, damit die Konfiguration korrekt vorgenommen werden kann. Ohne
+       Internetzugang (freier Zugang via HTTP (Port 80, 443) und zum DNS (Port 53)) ist
+       die Konfiguration derzeit NICHT m&ouml;glich. Die Konfiguration mu&szlig; NICHT
+       am Aufstellort vorgenommen werden, dies kann &uuml;berall geschehen.]])
+  end
+
   local text = i18n.translate('If you want the location of your node to '
     .. 'be displayed on the map, you can enter its coordinates here.')
   if show_altitude() then

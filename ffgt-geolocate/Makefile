@@ -23,10 +23,14 @@ define Build/Configure
 endef
 
 define Build/Compile
+	$(call GluonBuildI18N,ffgt-geolocate,i18n)
+	$(call GluonSrcDiet,./luasrc,$(PKG_BUILD_DIR)/luadest/)
 endef
 
 define Package/ffgt-geolocate/install
 	$(CP) ./files/* $(1)/
+	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
+	$(call GluonInstallI18N,ffgt-geolocate,$(1))
 endef
 
 $(eval $(call BuildPackage,ffgt-geolocate))
