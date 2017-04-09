@@ -34,15 +34,13 @@ define Package/ffgt-siteselect/install
 	mkdir -p $(1)/etc/config/
 	mkdir -p $(1)/lib/gluon/siteselect/
 	lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/site.json
-    GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/zzz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/zzz.json
-    GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/wrz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/wrz.json
-    GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/rhw.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/rhw.json
-    GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/gto.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/gto.json
-    GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/gt8.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/gt8.json
-
+	GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/zzz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/zzz.json
+	GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/wrz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/wrz.json
+	GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/rhw.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/rhw.json
+	GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/gto.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/gto.json
+	GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/gt8.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/gt8.json
 	$(CP) ./files/* $(1)/
 	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
-
 endef
 
 $(eval $(call BuildPackage,ffgt-siteselect))
