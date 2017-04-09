@@ -33,7 +33,6 @@ define Package/ffgt-siteselect/install
 	$(INSTALL_DIR) $(1)/lib/gluon
 	mkdir -p $(1)/etc/config/
 	mkdir -p $(1)/lib/gluon/siteselect/
-	lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/site.json
 	GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/zzz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/zzz.json
 	GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/wrz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/wrz.json
 	GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/rhw.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/siteselect/rhw.json
