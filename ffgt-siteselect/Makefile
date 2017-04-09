@@ -23,6 +23,7 @@ define Build/Configure
 endef
 
 define Build/Compile
+	$(call GluonSrcDiet,./luasrc,$(PKG_BUILD_DIR)/luadest/)
 endef
 
 define Package/ffgt-siteselect/install
