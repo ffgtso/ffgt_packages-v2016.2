@@ -32,11 +32,11 @@ define Package/ffgt-siteselect/install
 	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
 
 	lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/site.json
-    GLUON_SITE_CONFIG=./luasrc/sitefiles/zzz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/zzz.json
-    GLUON_SITE_CONFIG=./luasrc/sitefiles/wrz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/wrz.json
-    GLUON_SITE_CONFIG=./luasrc/sitefiles/rhw.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/rhw.json
-    GLUON_SITE_CONFIG=./luasrc/sitefiles/gto.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/gto.json
-    GLUON_SITE_CONFIG=./luasrc/sitefiles/gt8.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/gt8.json
+    GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/zzz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/zzz.json
+    GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/wrz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/wrz.json
+    GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/rhw.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/rhw.json
+    GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/gto.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/gto.json
+    GLUON_SITE_CONFIG=./luasrc/lib/gluon/siteselect/gt8.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/gt8.json
 endef
 
 $(eval $(call BuildPackage,ffgt-siteselect))
