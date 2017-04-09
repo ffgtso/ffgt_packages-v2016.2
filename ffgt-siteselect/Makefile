@@ -27,8 +27,9 @@ endef
 
 define Package/ffgt-siteselect/install
 	mkdir -p $(1)/etc/config/
-	mkdir -p $(1)/lib/gluon/site-select/
+	mkdir -p $(1)/lib/gluon/siteselect/
 	$(CP) ./files/* $(1)/
+	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
 
 	lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/site.json
     GLUON_SITE_CONFIG=./luasrc/sitefiles/zzz.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/zzz.json

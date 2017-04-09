@@ -11,6 +11,8 @@ local newcommunity
 local cmdline
 local srcfile
 
+-- 2017-04-09: Adapted to use .conf instead of .json
+--
 -- 2016-06-10: Reworked.
 --
 -- gluon.site_config now does select the proper site.conf without
@@ -55,7 +57,7 @@ if not fs.access("/tmp/site-upgrade.lock") then
   cmdline=string.format('/sbin/uci get siteselect.%s.path', newcommunity)
   srcfile=string.gsub(sys.exec(cmdline), "\n", "")
   os.execute(string.format("logger 'Using %s for site_select %s'", srcfile, newcommunity))
-  os.execute(string.format("/bin/cp %s /lib/gluon/site.conf", srcfile))
+  os.execute(string.format("/bin/cp %s /lib/gluon/site.json", srcfile))
   -- Should not be necessary anymore, as per gluon-site_config, the site-select one was used already.
   -- os.execute('/lib/gluon/upgrade/400-mesh-vpn-fastd')
   -- os.execute('/lib/gluon/site-upgrade')
