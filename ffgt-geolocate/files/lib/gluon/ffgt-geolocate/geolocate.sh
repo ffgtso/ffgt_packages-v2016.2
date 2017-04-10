@@ -1,5 +1,12 @@
 #!/bin/sh
 # This script is supposed to be run (once) from lua
+IW="/usr/sbin/iw"
+if [ ! -e $IW ]; then
+ echo >/tmp/fake_iw -e "#!/bin/sh\ncat /dev/null"
+ chmod +x /tmp/fake_iw
+ IW="/tmp/fake_iw"
+fi
+export IW
 
 runnow=0
 isconfigured="`/sbin/uci get gluon-setup-mode.@setup_mode[0].configured 2>/dev/null`"
@@ -20,12 +27,12 @@ if [ ${runnow} -eq 1 ]; then
 
  mac=`/sbin/uci get network.bat0.macaddr`
  # FIXME. On multiband devices, check wlan1 as well!
- /usr/sbin/iw dev wlan0 scan >/dev/null 2>&1
+ ${IW} dev wlan0 scan >/dev/null 2>&1
  if [ $? -ne 0 ]; then
   /sbin/ifconfig wlan0 up
   sleep 2
  fi
- /usr/bin/wget -q -O /dev/null "`/usr/sbin/iw dev wlan0 scan | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/gluon-luci-geolocate/preparse.awk`" && /bin/touch /tmp/run/geolocate-data-sent
+ /usr/bin/wget -q -O /dev/null "`${IW} wlan0 scan | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/geolocate-data-sent
  # On success only ...
  if [ -e /tmp/run/geolocate-data-sent ]; then
   curlat="`/sbin/uci get gluon-node-info.@location[0].longitude 2>/dev/null`"
