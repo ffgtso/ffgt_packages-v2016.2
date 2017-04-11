@@ -12,9 +12,9 @@ You may obtain a copy of the License at
 $Id$
 ]]--
 
-module("luci.controller.admin.geolocate", package.seeall)
+module("luci.controller.geo.geolocate", package.seeall)
 
 function index()
-        entry({"admin", "geolocate"}, cbi("admin/geolocate"), _("Geo-Lokalisiering"), 20)
+        entry({"admin", "geolocate"}, cbi("geo/geolocate"), _("Geo-Lokalisiering"), 20)
 end
 
