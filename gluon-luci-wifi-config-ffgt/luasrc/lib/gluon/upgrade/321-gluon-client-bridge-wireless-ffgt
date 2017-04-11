@@ -1,8 +1,13 @@
 #!/usr/bin/lua
 
 -- This is 312-gluon-client-bridge-wireless-ffgt. It is supposed
--- to run instead of 320-gluon-client-bridge-wireless ...
--- This means we will need to do dirty tricks here during build :(
+-- to run instead of 320-gluon-client-bridge-wireless.
+-- This means we will need to do dirty tricks here during first
+-- boot, i. e. replace the file in setup-mode.
+-- FIXME: Won't work on r/o filesystems. Solution would be to
+-- move this into main Gluon packages, but this then means we
+-- cannot update Gluon core anymore. Did that with v2015.1 and
+-- it sucked big time. -wusel, 20170411
 
 local site = require 'gluon.site_config'
 local util = require 'gluon.util'
