@@ -32,6 +32,7 @@ define Build/Compile
 endef
 
 define Package/gluon-luci-wifi-config-ffgt/install
+	$(CP) ./files/* $(1)/
 	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
 	$(call GluonInstallI18N,gluon-luci-wifi-config-ffgt,$(1))
 endef
