@@ -1,5 +1,5 @@
 #!/bin/sh
-# This script is supposed to be run every 1-5 minutes via cron.
+# This script is supposed to be run every 1-5 minutes via micron.d.
 #
 # FIXME: do not uci commit all the time with is_mobile! That would kill the FLASH rather soonish :(
 #

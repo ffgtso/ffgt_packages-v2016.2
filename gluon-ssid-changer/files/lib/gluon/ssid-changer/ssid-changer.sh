@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ ! -e /usr/sbin/iw ]; then
+ # No iw binary, so most likely no WiFi at all.
+ exit 0
+fi
+
 # At first some Definitions:
 MINUTES=1 # only once every timeframe the SSID will change to OFFLINE
 # set to 1 minute to change every time the router gets offline
