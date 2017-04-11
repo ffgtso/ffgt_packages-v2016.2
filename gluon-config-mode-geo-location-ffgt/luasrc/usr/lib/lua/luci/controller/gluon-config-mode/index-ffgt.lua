@@ -31,7 +31,7 @@ function index()
 
     page          = node("gluon-config-mode")
     page.title    = _("Wizard")
-    page.target   = alias("gluon-config-mode", "wizard-prepare")
+    page.target   = alias("gluon-config-mode", "wizard-pree")
     page.order    = 5
     page.setuser  = "root"
     page.setgroup = "root"
