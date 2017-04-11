@@ -14,6 +14,10 @@ local uci = luci.model.uci.cursor()
 module("luci.controller.gluon-config-mode.index-ffgt", package.seeall)
 
 function index()
+    entry({"geolocate", "now"}, form("gluon-config-mode/wizard-pre")).index = true
+end
+
+function nonindex()
   local uci_state = luci.model.uci.cursor_state()
 
   if uci_state:get_first("gluon-setup-mode", "setup_mode", "running", "0") == "1" then
@@ -31,7 +35,7 @@ function index()
 
     page          = node("gluon-config-mode")
     page.title    = _("Wizard")
-    page.target   = alias("gluon-config-mode", "wizard-pree")
+    page.target   = alias("gluon-config-mode", "wizard-pre")
     page.order    = 5
     page.setuser  = "root"
     page.setgroup = "root"
