@@ -1,7 +1,7 @@
 #!/bin/sh
 #/etc/rc.common
 
-START=14
+START=50
 
 # Run multiple time, in case the User forgot to re-plug blue=>yellow ...
 ((sleep 240 ; /lib/gluon/config-mode/notify-setup.sh)&)
