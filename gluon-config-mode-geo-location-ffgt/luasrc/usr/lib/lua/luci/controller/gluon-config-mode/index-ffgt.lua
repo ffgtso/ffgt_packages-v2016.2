@@ -11,7 +11,7 @@ $Id$
 ]]--
 local uci = luci.model.uci.cursor()
 
-module("luci.controller.gluon-config-mode.index", package.seeall)
+module("luci.controller.gluon-config-mode.index-ffgt", package.seeall)
 
 function index()
   local uci_state = luci.model.uci.cursor_state()
@@ -37,11 +37,9 @@ function index()
     page.setgroup = "root"
     page.index    = true
 
-    entry({"gluon-config-mode", "wizard-prepare"}, call("prepare"))
     entry({"gluon-config-mode", "wizard-pre"}, form("gluon-config-mode/wizard-pre")).index = true
     entry({"gluon-config-mode", "wizard"}, form("gluon-config-mode/wizard"))
     entry({"gluon-config-mode", "geolocate"}, call("geolocate"))
-    entry({"gluon-config-mode", "reboot"}, call("action_reboot"))
   end
 end
 
@@ -50,36 +48,36 @@ function prepare()
     -- FIXME! Does this belong here?
     -- This code sets some presets for our Firmwares.
     local uci = luci.model.uci.cursor()
-    local secret = uci:get("fastd", "mesh_vpn", "secret")
+--    local secret = uci:get("fastd", "mesh_vpn", "secret")
 
-    if not secret or not secret:match("%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x") then
-      local f = io.popen("fastd --generate-key --machine-readable", "r")
-      local secret = f:read("*a")
-      f:close()
+--    if not secret or not secret:match("%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x") then
+--      local f = io.popen("fastd --generate-key --machine-readable", "r")
+--      local secret = f:read("*a")
+--      f:close()
 
-      uci:set("fastd", "mesh_vpn", "secret", secret)
-      uci:save("fastd")
-      uci:commit("fastd")
+--      uci:set("fastd", "mesh_vpn", "secret", secret)
+--      uci:save("fastd")
+--      uci:commit("fastd")
 
       uci:set("autoupdater", "settings", "enabled", "1")
       uci:save("autoupdater")
       uci:commit("autoupdater")
 
-      uci:set("fastd", "mesh_vpn", "enabled", "1")
-      uci:save("fastd")
-      uci:commit("fastd")
+--      uci:set("fastd", "mesh_vpn", "enabled", "1")
+--      uci:save("fastd")
+--      uci:commit("fastd")
 
-      uci:set("gluon-simple-tc", "mesh_vpn", "interface")
-      uci:set("gluon-simple-tc", "mesh_vpn", "ifname", "mesh-vpn")
-      uci:set("gluon-simple-tc", "mesh_vpn", "enabled", "0")
-      uci:save("gluon-simple-tc")
-      uci:commit("gluon-simple-tc")
+--      uci:set("gluon-simple-tc", "mesh_vpn", "interface")
+--      uci:set("gluon-simple-tc", "mesh_vpn", "ifname", "mesh-vpn")
+--      uci:set("gluon-simple-tc", "mesh_vpn", "enabled", "0")
+--      uci:save("gluon-simple-tc")
+--      uci:commit("gluon-simple-tc")
 
       local sname = uci:get_first("gluon-node-info", "location")
       uci:set("gluon-node-info", sname, "share_location", "1")
       uci:save("gluon-node-info")
       uci:commit("gluon-node-info")
-    end
+--    end
   end
   luci.http.redirect(luci.dispatcher.build_url("gluon-config-mode/wizard-pre"))
 end
