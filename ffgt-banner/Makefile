@@ -27,7 +27,6 @@ define Build/Configure
 endef
 
 define Build/Compile
-#	$(call GluonSrcDiet,./luasrc,$(PKG_BUILD_DIR)/luadest/)
 endef
 
 define Package/ffgt-banner/preinst
@@ -67,7 +66,6 @@ endef
 
 define Package/ffgt-banner/install
 	$(CP) ./files/* $(1)/
-#	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
 endef
 
 $(eval $(call BuildPackage,ffgt-banner))
