@@ -11,6 +11,8 @@ MODULO=`/usr/bin/expr ${CURMIN} % 5`
 mobile="`/sbin/uci get gluon-node-info.@location[0].is_mobile 2>/dev/null`"
 if [ $? -eq 1 ]; then
  mobile=0
+else
+ mobile=1
 fi
 runnow=1
 isconfigured="`/sbin/uci get gluon-setup-mode.@setup_mode[0].configured 2>/dev/null`"
@@ -62,7 +64,6 @@ if [ ${runnow} -eq 1 ]; then
  # On success only ...
  if [ -e /tmp/run/wifi-data-sent ]; then
   curlat="`/sbin/uci get gluon-node-info.@location[0].longitude 2>/dev/null`"
-  mobile="`/sbin/uci get gluon-node-info.@location[0].is_mobile 2>/dev/null`"
   if [ "X${curlat}" = "X" -o "X${mobile}" = "X1" -o ${forcerun} -eq 1 ]; then
    /bin/cat /dev/null >/tmp/geoloc.sh
    sleep 2
