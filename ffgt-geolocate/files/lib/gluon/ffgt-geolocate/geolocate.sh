@@ -38,7 +38,7 @@ if [ ${runnow} -eq 1 ]; then
   curlat="`/sbin/uci get gluon-node-info.@location[0].longitude 2>/dev/null`"
   if [ "X${curlat}" = "X" ]; then
    sleep 5
-   /usr/bin/wget -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/geoloc.php?list=me&node=$mac"
+   /usr/bin/wget -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/wizard.php?list=me&node=$mac"
    if [ -e /tmp/geoloc.out ]; then
     # Actually, we might want to sanity check the reply, as it could be empty or worse ... (FIXME) 
     /bin/cat /dev/null >/tmp/geoloc.sh

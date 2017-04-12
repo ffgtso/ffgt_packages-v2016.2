@@ -20,7 +20,7 @@ function M.section(form)
   local mac = string.sub(util.node_id(), 9)
 
   if not zip or not city or not addr then
-    luci.http.redirect(luci.dispatcher.build_url("gluon-config-mode/wizard-pre"))
+    luci.http.redirect(luci.dispatcher.build_url("geoloc/index"))
   end
 
   hostname = hostname:gsub(" ","-")

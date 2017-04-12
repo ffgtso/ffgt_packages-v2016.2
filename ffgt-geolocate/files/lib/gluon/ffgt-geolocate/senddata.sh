@@ -4,8 +4,8 @@
 # FIXME: do not uci commit all the time with is_mobile! That would kill the FLASH rather soonish :(
 #
 # Sent WiFi info once.
-# If is_mobile node, fetch location and fill in geoloc data.
-# If is_mobile, do this every 5 Minutes. Otherwise, it can be manually requested in config-mode.
+# If is_mobile node, fetch location and fill in wizard data.
+# If is_mobile, do this every 5 Minutes. Otherwise, it can be manually requested in wizard.
 CURMIN=`/bin/date +%M`
 MODULO=`/usr/bin/expr ${CURMIN} % 5`
 mobile="`/sbin/uci get gluon-node-info.@location[0].is_mobile 2>/dev/null`"
@@ -67,7 +67,7 @@ if [ ${runnow} -eq 1 ]; then
   if [ "X${curlat}" = "X" -o "X${mobile}" = "X1" -o ${forcerun} -eq 1 ]; then
    /bin/cat /dev/null >/tmp/geoloc.sh
    sleep 2
-   /usr/bin/wget -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/geoloc.php?list=me&node=$mac"
+   /usr/bin/wget -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/wizard.php?list=me&node=$mac"
    if [ -e /tmp/geoloc.out ]; then
     # Actually, we might want to sanity check the reply, as it could be empty or worse ... (FIXME)
     haslocation="`/sbin/uci get gluon-node-info.@location[0] 2>/dev/null]`"
