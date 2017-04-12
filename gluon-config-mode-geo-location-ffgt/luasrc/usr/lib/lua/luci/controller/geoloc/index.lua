@@ -35,6 +35,7 @@ function index()
 	page.index = true
 
 	entry({"geoloc", "index"}, cbi("geoloc/info"), _("Information"), 1).ignoreindex = true
+ 	entry({"geoloc", "wizard"}, cbi("geoloc/wizard"), _("Wizard"), 1)
     entry({"geoloc", "locate"}, call("geolocate"))
 end
 
