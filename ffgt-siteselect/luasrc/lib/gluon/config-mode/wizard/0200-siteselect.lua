@@ -15,7 +15,7 @@ function M.section(form)
     if not lat then lat=0 end
     if not lon then lon=0 end
     if not unlocode or (lat == "51" and lon == "9") then
-      luci.http.redirect(luci.dispatcher.build_url("gluon-config-mode/wizard"))
+      luci.http.redirect(luci.dispatcher.build_url("geoloc/wizard"))
     end
     if ((lat == 0) or (lat == "51")) and ((lon == 0) or (lon == "9")) then
 	    local s = form:section(cbi.SimpleSection, nil, [[
