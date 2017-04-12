@@ -12,6 +12,7 @@ You may obtain a copy of the License at
 $Id$
 ]]--
 
+os.execute('/lib/gluon/ffgt-geolocate/senddata.sh force')
 local uci = luci.model.uci.cursor()
 
 local hostname, addr, locode, city
@@ -27,7 +28,10 @@ Sofern eine Internetverbindung besteht, sollte in wenigen Sekunden eine Position
 ermittelt und diese abgespeichert werden. Falls dies der erste Aufruf des Setups
 ist, wird der Knotennamen basierend auf der Lokalisierung vorgeschlagen.]])
 
-os.execute("((/lib/gluon/ffgt-geolocate/geolocate.sh)&)")
+-- os.execute("((/lib/gluon/ffgt-geolocate/geolocate.sh)&)")
+-- os.execute('/lib/gluon/ffgt-geolocate/senddata.sh force')
+os.execute('sleep 2')
+luci.http.redirect(luci.dispatcher.build_url("gluon-config-mode/wizard"))
 
 s = f:section(SimpleSection, nil, [[Weiter mit "Weiter".]])
 

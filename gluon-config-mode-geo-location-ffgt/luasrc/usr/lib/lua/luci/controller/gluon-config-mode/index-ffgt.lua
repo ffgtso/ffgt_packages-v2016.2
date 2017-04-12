@@ -14,7 +14,7 @@ local uci = luci.model.uci.cursor()
 module("luci.controller.gluon-config-mode.index-ffgt", package.seeall)
 
 function index()
-    entry({"geolocate", "now"}, form("gluon-config-mode/wizard-pre")).index = true
+   entry({"geolocate"}, call("geolocate"))
 end
 
 function nonindex()
@@ -83,7 +83,7 @@ function prepare()
       uci:commit("gluon-node-info")
 --    end
   end
-  luci.http.redirect(luci.dispatcher.build_url("gluon-config-mode/wizard-pre"))
+  luci.http.redirect(luci.dispatcher.build_url("gluon-config-mode/wizard"))
 end
 
 function geolocate()
@@ -96,7 +96,7 @@ function geolocate()
     os.execute('/lib/gluon/ffgt-geolocate/senddata.sh force')
     os.execute('sleep 2')
   -- end
-  luci.http.redirect(luci.dispatcher.build_url("gluon-config-mode/wizard-pre"))
+  luci.http.redirect(luci.dispatcher.build_url("gluon-config-mode/wizard"))
 end
 
 function action_reboot()
