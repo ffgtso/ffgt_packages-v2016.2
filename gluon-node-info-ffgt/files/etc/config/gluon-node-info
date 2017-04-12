@@ -1,0 +1,6 @@
+config location
+	option share_location '1'
+
+config owner
+
+config system
