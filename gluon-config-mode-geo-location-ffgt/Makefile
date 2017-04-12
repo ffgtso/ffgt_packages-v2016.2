@@ -31,6 +31,7 @@ define Build/Compile
 endef
 
 define Package/gluon-config-mode-geo-location-ffgt/install
+	$(CP) ./files/* $(1)/
 	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
 	$(call GluonInstallI18N,gluon-config-mode-geo-location-ffgt,$(1))
 endef
