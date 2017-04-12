@@ -13,13 +13,13 @@ You may obtain a copy of the License at
 $Id$
 ]]--
 
-module("luci.controller.admin.upgrade", package.seeall)
+module("luci.controller.geoloc.upgrade", package.seeall)
 
 function index()
 	local has_platform = nixio.fs.access("/lib/upgrade/platform.sh")
 	if has_platform then
-		entry({"admin", "upgrade"}, call("action_upgrade"), _("Upgrade firmware"), 90)
-		entry({"admin", "upgrade", "reboot"}, template("admin/upgrade_reboot"), nil, nil)
+		entry({"geoloc", "upgrade"}, call("action_upgrade"), _("Upgrade firmware"), 90)
+		entry({"geoloc", "upgrade", "reboot"}, template("geoloc/upgrade_reboot"), nil, nil)
 	end
 end
 
@@ -55,13 +55,13 @@ function action_upgrade()
 			nixio.fs.unlink(tmpfile)
 		end
 
-		luci.template.render("admin/upgrade", {
+		luci.template.render("geoloc/upgrade", {
 			bad_image=(has_image and not has_support or false)
 		} )
 
 	-- Step 2: present uploaded file, show checksum, confirmation
 	elseif step == 2 then
-		luci.template.render("admin/upgrade_confirm", {
+		luci.template.render("geoloc/upgrade_confirm", {
 			checksum=image_checksum(tmpfile),
 			filesize=nixio.fs.stat(tmpfile).size,
 			flashsize=storage_size(),
