@@ -18,18 +18,20 @@ function M.section(form)
        die Konfiguration derzeit NICHT m&ouml;glich.]])
   end
 
+  local lat = uci:get_first("gluon-node-info", 'location', "latitude")
+  local lon = uci:get_first("gluon-node-info", 'location', "longitude")
+  if not lat then lat=0 end
+  if not lon then lon=0 end
+  if ((lat == "51") and (lon == "9")) then
+    local s = form:section(cbi.SimpleSection, nil,
+    [[<b>Die Adressaufl&ouml;sung ist fehlgeschlagen.</b> Bitte &uuml;berpr&uuml;fe Deine
+    Koordinaten, sie konnten keinem Ort zugeordnet werden. Bitte beachte, da&szlig; Dein
+    Knoten Internet-Zugang haben mu&szlig;, damit die Daten validiert werden k&ouml;nnen.]])
+  end
+
   local s = form:section(cbi.SimpleSection, nil, [[]])
   local sname = uci:get_first("gluon-node-info", "location")
   local o
-  -- FIXME! The below doesn't work after returning from the executing the shell script changing
-  -- /etc/config/gluon-node-info (at least on x86-kvm). Thus we do it the hard way, reading the
-  -- actual file. LuCI really should stop caching shit -- or /me pointed to a proper LuCI tutorial :(
-  -- local lat = uci:get_first("gluon-node-info", sname, "latitude")
-  -- local lon = uci:get_first("gluon-node-info", sname, "longitude")
-  local lat = tonumber(sys.exec("uci get gluon-node-info.@location[0].latitude 2>/dev/null")) or 0
-  local lon = tonumber(sys.exec("uci get gluon-node-info.@location[0].longitude 2>/dev/null")) or 0
-  if not lat then lat=0 end
-  if not lon then lon=0 end
   local maplat = lat
   local maplon = lon
   if ((lat == 0) or (lat == 51)) and ((lon == 0) or (lon == 9)) then

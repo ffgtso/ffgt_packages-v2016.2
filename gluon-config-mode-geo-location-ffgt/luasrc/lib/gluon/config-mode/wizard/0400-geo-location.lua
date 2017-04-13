@@ -3,6 +3,7 @@ local i18n = require "luci.i18n"
 local uci = luci.model.uci.cursor()
 local site = require 'gluon.site_config'
 local fs = require "nixio.fs"
+local sys = luci.sys
 
 local M = {}
 
