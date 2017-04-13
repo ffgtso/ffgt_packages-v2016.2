@@ -18,14 +18,10 @@
 	local i18n = require 'luci.i18n'
 	local template = require 'luci.template'
 -%>
-<div style="text-align: right">
-        <a class="cssbutton cbi-button cbi-button-apply" href="<%=luci.dispatcher.build_url("geoloc/locate")%>">&nbsp;Geolocate&nbsp;</a>
-        <!-- <a class="cssbutton cbi-button cbi-button-apply" href="<%=luci.dispatcher.build_url("gluon-config-mode/wizard-pre")%>">&nbsp;Reload&nbsp;</a> -->
-</div>
 
 <h2><%:Welcome!%></h2>
 <p>
-	<%= template.render_string(i18n.translate('gluon-config-mode:geoloc-welcome'), {hostname=hostname, sysconfig=sysconfig}) %>
+	<%= template.render_string(i18n.translate('geoloc:welcome'), {hostname=hostname, sysconfig=sysconfig}) %>
 </p>
 
 <% if not self.embedded then %>

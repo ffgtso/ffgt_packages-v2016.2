@@ -3,6 +3,7 @@ local i18n = require "luci.i18n"
 local pretty_hostname = require "pretty_hostname"
 local uci = luci.model.uci.cursor()
 local util = require 'gluon.util'
+local fs = require "nixio.fs"
 
 local M = {}
 
