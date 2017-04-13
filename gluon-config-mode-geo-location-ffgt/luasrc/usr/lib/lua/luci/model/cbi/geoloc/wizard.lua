@@ -21,7 +21,7 @@ end
 
 f = SimpleForm("geoloc")
 f.reset = false
-f.template = "geoloc/cbi/geoloc"
+f.template = "geoloc/geoloc"
 
 for _, s in ipairs(geoloc) do
   s.section(f)
