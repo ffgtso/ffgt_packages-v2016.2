@@ -29,13 +29,12 @@ function index()
 		root.index = true
 	end
 
-	local page = entry({"geoloc"}, alias("geoloc", "index"), _("Geolocate"), 10)
+	local page = entry({"geoloc"}, alias("geoloc", "wizard"), _("Geolocate"), 10)
 	page.sysauth = "root"
 	page.sysauth_authenticator = function() return "root" end
 	page.index = true
 
-	entry({"geoloc", "index"}, cbi("geoloc/info"), _("Information"), 1).ignoreindex = true
- 	entry({"geoloc", "wizard"}, cbi("geoloc/wizard"), _("Wizard"), 1)
+ 	entry({"geoloc", "wizard"}, cbi("geoloc/wizard"), _("Wizard"), 1).ignoreindex = true
     entry({"geoloc", "locate"}, call("geolocate"))
 end
 
