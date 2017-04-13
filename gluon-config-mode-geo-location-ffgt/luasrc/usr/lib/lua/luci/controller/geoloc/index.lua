@@ -35,7 +35,7 @@ function index()
 	page.index = true
 
  	entry({"geoloc", "wizard"}, cbi("geoloc/wizard"), _("Wizard"), 1).ignoreindex = true
-    entry({"geoloc", "locate"}, call("geolocate"))
+    entry({"geoloc", "locate"}, call("geolocate"), _("Locate"))
 end
 
 function geolocate()
@@ -48,5 +48,5 @@ function geolocate()
     os.execute('/lib/gluon/ffgt-geolocate/senddata.sh force')
     os.execute('sleep 2')
   -- end
-  luci.http.redirect(luci.dispatcher.build_url("gluon-config-mode/wizard"))
+  luci.http.redirect(luci.dispatcher.build_url("geoloc/wizard"))
 end
