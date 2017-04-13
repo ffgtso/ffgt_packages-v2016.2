@@ -6,7 +6,10 @@ local fs = require "nixio.fs"
 local M = {}
 
 function M.section(form)
-  os.execute('/lib/gluon/config-mode/check4online.sh')
+  if not fs.access("/tmp/is_online") then
+    -- (re-)try ...
+    os.execute('/lib/gluon/config-mode/check4online.sh')
+  end
   if not fs.access("/tmp/is_online") then
     local s = form:section(cbi.SimpleSection, nil, [[<b>Keine Internetverbindung!</b>
        Bitte schlie&szlig;e den Knoten &uuml;ber den <i>blauen</i> Port an Deinen
@@ -101,7 +104,7 @@ function M.handle(data)
       uci:save("gluon-node-info")
       uci:commit("gluon-node-info")
       os.execute('/lib/gluon/ffgt-geolocate/rgeo.sh')
-      -- Hrmpft. This isn't working due to broken caching. Fsck you, LuCI!
+      -- Hrmpft. This isn't working due to ... caching? Darn, LuCI!
       --local ucinew = luci.model.uci.cursor()
       --local lat = ucinew:get_first("gluon-node-info", sname, "latitude")
       --local lon = ucinew:get_first("gluon-node-info", sname, "longitude")
