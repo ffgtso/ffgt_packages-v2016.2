@@ -93,6 +93,34 @@ static struct json_object * get_location(struct uci_context *ctx, struct uci_pac
 	return ret;
 }
 
+static struct json_object * get_siteselect(struct uci_context *ctx, struct uci_package *p) {
+	struct json_object *ret = json_object_new_object();
+	struct uci_section *s = get_first_section(p, "location");
+	if (!s)
+		return NULL;
+
+	const char *siteselect = uci_lookup_option_string(ctx, s, "siteselect");
+	if (siteselect) {
+        json_object_object_add(ret, "siteselect", gluonutil_wrap_string(siteselect));
+        return ret;
+    } else
+        return NULL;
+}
+
+static struct json_object * get_locode(struct uci_context *ctx, struct uci_package *p) {
+	struct json_object *ret = json_object_new_object();
+	struct uci_section *s = get_first_section(p, "location");
+	if (!s)
+		return NULL;
+
+	const char *siteselect = uci_lookup_option_string(ctx, s, "locode");
+	if (locode) {
+        json_object_object_add(ret, "locode", gluonutil_wrap_string(locode));
+        return ret;
+    } else
+        return NULL;
+}
+
 static struct json_object * get_owner(struct uci_context *ctx, struct uci_package *p) {
 	const char *contact = get_first_option(ctx, p, "owner", "contact");
 	if (!contact || !*contact)
@@ -128,6 +156,14 @@ static struct json_object * respondd_provider_nodeinfo(void) {
 		struct json_object *owner = get_owner(ctx, p);
 		if (owner)
 			json_object_object_add(ret, "owner", owner);
+
+		struct json_object *siteselect = get_siteselect(ctx, p);
+		if (siteselect)
+			json_object_object_add(ret, "location", siteselect);
+
+		struct json_object *owner = get_locode(ctx, p);
+		if (locode)
+			json_object_object_add(ret, "location", locode);
 
 		json_object_object_add(ret, "system", get_system(ctx, p));
 	}
