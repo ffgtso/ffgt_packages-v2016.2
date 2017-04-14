@@ -28,21 +28,7 @@ function M.section(form)
   elseif (lat == "51") and (lon == "9") then
     luci.http.redirect(luci.dispatcher.build_url("geoloc/wizard"))
   elseif not unlocode then
-    local s = form:section(cbi.SimpleSection, nil,
-    [[<b>Die Adressaufl&ouml;sung ist fehlgeschlagen.</b> Bitte
-    <a href="/cgi-bin/luci/geoloc/wizard">&uuml;berpr&uuml;fe</a> Deine
-    Koordinaten, sie konnten keinem Ort zugeordnet werden. Bitte beachte, da&szlig; Dein
-    Knoten Internet-Zugang haben mu&szlig;, damit die Daten validiert werden k&ouml;nnen.]])
-  else
-    local addr = uci:get_first("gluon-node-info", 'location', "addr") or "FEHLER_ADDR"
-    local city = uci:get_first("gluon-node-info", 'location', "city") or "FEHLER_ORT"
-    local zip = uci:get_first("gluon-node-info", 'location', "zip") or "00000"
-    local community = uci:get_first('siteselect', unlocode, 'sitename') or unlocode
-    if community == unlocode then
-      community=string.gsub(sys.exec(string.format('/sbin/uci get siteselect.%s.sitename', unlocode)), "\n", "")
-    end
-    local mystr = string.format("Lokalisierung des Knotens erfolgreich; bitte Daten &uuml;berpr&uuml;fen:<br></br><b>Adresse:</b> %s, %s %s<br></br><b>Koordinaten:</b> %f %f<br></br><b>Community:</b> %s", addr, zip, city, lat, lon, community)
-    local s = form:section(cbi.SimpleSection, nil, mystr)
+    luci.http.redirect(luci.dispatcher.build_url("geoloc/wizard"))
   end
 
   local s = form:section(cbi.SimpleSection, nil,

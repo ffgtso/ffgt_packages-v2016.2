@@ -22,29 +22,23 @@ function M.section(form)
   local lon = uci:get_first("gluon-node-info", 'location', "longitude")
   if not lat then lat=0 end
   if not lon then lon=0 end
-  if ((lat == "51") and (lon == "9")) then
+  local maplat = lat
+  local maplon = lon
+  if ((lat == 51) and (lon == 9)) then
     local s = form:section(cbi.SimpleSection, nil,
     [[<b>Die Adressaufl&ouml;sung ist fehlgeschlagen.</b> Bitte &uuml;berpr&uuml;fe Deine
     Koordinaten, sie konnten keinem Ort zugeordnet werden. Bitte beachte, da&szlig; Dein
     Knoten Internet-Zugang haben mu&szlig;, damit die Daten validiert werden k&ouml;nnen.]])
-  end
-
-  local s = form:section(cbi.SimpleSection, nil, [[]])
-  local sname = uci:get_first("gluon-node-info", "location")
-  local o
-  local maplat = lat
-  local maplon = lon
-  if ((lat == 0) or (lat == 51)) and ((lon == 0) or (lon == 9)) then
-    -- o = s:option(cbi.Value, "_zip", "Postleitzahl")
-    -- o.default = "33333"
-    -- o.rmempty = false
-
     maplat = "51.908624626589585"
     maplon = "8.380953669548035"
     lat=0
     lon=0
   end
   -- At this point, lat/lon are numbers.
+
+  local s = form:section(cbi.SimpleSection, nil, [[]])
+  local sname = uci:get_first("gluon-node-info", "location")
+  local o
 
   o = s:option(cbi.Value, "_latitude", "Breitengrad")
   if lat ~= 0 then
