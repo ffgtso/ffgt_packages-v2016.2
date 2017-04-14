@@ -113,7 +113,7 @@ static struct json_object * get_locode(struct uci_context *ctx, struct uci_packa
 	if (!s)
 		return NULL;
 
-	const char *siteselect = uci_lookup_option_string(ctx, s, "locode");
+	const char *locode = uci_lookup_option_string(ctx, s, "locode");
 	if (locode) {
         json_object_object_add(ret, "locode", gluonutil_wrap_string(locode));
         return ret;
