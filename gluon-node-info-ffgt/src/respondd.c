@@ -131,6 +131,16 @@ static struct json_object * get_owner(struct uci_context *ctx, struct uci_packag
 	return ret;
 }
 
+static struct json_object * get_fakeowner(struct uci_context *ctx, struct uci_package *p) {
+	const char *contact = get_first_option(ctx, p, "owner", "contact");
+	if (!contact || !*contact)
+		return NULL;
+
+	struct json_object *ret = json_object_new_object();
+	json_object_object_add(ret, "contact", gluonutil_wrap_string("<present>"));
+	return ret;
+}
+
 static struct json_object * get_system(struct uci_context *ctx, struct uci_package *p) {
 	struct json_object *ret = json_object_new_object();
 
@@ -157,9 +167,13 @@ static struct json_object * respondd_provider_nodeinfo(void) {
 		if (owner)
 			json_object_object_add(ret, "owner", owner);
 
+		struct json_object *fakeowner = get_fakeowner(ctx, p);
+		if (fakeowner)
+			json_object_object_add(ret, "fakeowner", fakeowner);
+
 		struct json_object *siteselect = get_siteselect(ctx, p);
 		if (siteselect)
-			json_object_object_add(ret, "location", siteselect);
+			json_object_object_add(ret, "siteselect", siteselect);
 
 		struct json_object *locode = get_locode(ctx, p);
 		if (locode)
