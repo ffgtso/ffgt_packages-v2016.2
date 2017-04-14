@@ -1,11 +1,11 @@
 #!/usr/bin/lua
 
 local util = require("luci.util")
-local fs = require("luci.fs")
 local ltn12 = require 'luci.ltn12'
 local sys = require("luci.sys")
 local json = require("luci.json")
 local nixio = require 'nixio'
+local fs = require("nixio.fs")
 local platform_info = require("platform_info")
 local site = require 'gluon.site_config'
 local ip = require 'luci.ip'
