@@ -22,9 +22,11 @@ function M.section(form)
   local lon = uci:get_first("gluon-node-info", 'location', "longitude")
   if not lat then lat=0 end
   if not lon then lon=0 end
+  lat=tonumber(lat)
+  lon=tonumber(lon)
   local maplat = lat
   local maplon = lon
-  if ((lat == 51) and (lon == 9)) then
+  if ((lat == 51.0) and (lon == 9.0)) then
     local s = form:section(cbi.SimpleSection, nil,
     [[<b>Die Adressaufl&ouml;sung ist fehlgeschlagen.</b> Bitte &uuml;berpr&uuml;fe Deine
     Koordinaten, sie konnten keinem Ort zugeordnet werden. Bitte beachte, da&szlig; Dein
