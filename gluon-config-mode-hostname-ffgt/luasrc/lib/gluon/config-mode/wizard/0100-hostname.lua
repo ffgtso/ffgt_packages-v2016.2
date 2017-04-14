@@ -78,7 +78,23 @@ function M.section(form)
 end
 
 function M.handle(data)
-  pretty_hostname.set(uci, data._hostname)
+  local zip = uci:get_first("gluon-node-info", 'location', "zip")
+  local hostname
+  local uihostname
+  if data._defhostname ~= "input" then
+      hostname = data._defhostname
+  else
+      hostname = data._hostname
+  end
+  uihostname = zip .. "-" .. hostname
+  hostname = hostname:gsub(" ","-")
+  hostname = hostname:gsub("%p","-")
+  hostname = hostname:gsub("_","-")
+  hostname = hostname:gsub("%-%-","-")
+  hostname = zip .. "-" .. hostname
+  hostname = hostname:sub(1, 42)
+
+  pretty_hostname.set(uci, hostname)
   uci:commit("system")
 end
 
