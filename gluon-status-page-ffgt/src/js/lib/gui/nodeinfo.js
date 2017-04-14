@@ -40,7 +40,7 @@ define(["lib/helper"], function (Helper) {
       dlEntry(list, nodeInfo, "network.addresses", "IP-Adresse")
       dlEntry(list, nodeInfo, "software.firmware.release", "Firmware")
       dlEntry(list, nodeInfo, "siteselect.siteselect", "Site")
-      dlEntry(list, nodeInfo, "location.locode", "Locode")
+      dlEntry(list, nodeInfo, "locode.locode", "Locode")
       dlEntry(list, nodeInfo, "software.fastd.enabled", "Mesh-VPN")
       dlEntry(list, nodeInfo, "software.autoupdater.enabled", "Automatische Updates")
       dlEntry(list, nodeInfo, "software.autoupdater.branch", "Branch")
