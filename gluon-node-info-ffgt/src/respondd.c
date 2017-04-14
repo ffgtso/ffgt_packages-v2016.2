@@ -177,7 +177,7 @@ static struct json_object * respondd_provider_nodeinfo(void) {
 
 		struct json_object *locode = get_locode(ctx, p);
 		if (locode)
-			json_object_object_add(ret, "location", locode);
+			json_object_object_add(ret, "locode", locode);
 
 		json_object_object_add(ret, "system", get_system(ctx, p));
 	}
