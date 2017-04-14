@@ -44,12 +44,17 @@ local f = SimpleForm("wifi", translate("WLAN"))
 f.template = "admin/expertmode"
 
 local s = f:section(SimpleSection, nil, translate(
-                "You can enable or disable your node's client and mesh network "
-                  .. "SSIDs here. Please don't disable the mesh network without "
-                  .. "a good reason, so other nodes can mesh with yours.<br /><br />"
-                  .. "It is also possible to configure the WLAN adapters transmission power "
-                  .. "here. Please note that the transmission power values include the antenna gain "
-                  .. "where available, but there are many devices for which the gain is unavailable or inaccurate."
+               "You can enable or disable your node's client and mesh network SSIDs here. "
+               .. "Please don't disable the mesh network without a good reason, so other nodes "
+               .. "can mesh with yours.<br /><br />It is also possible to configure the WLAN "
+               .. "adapters transmission power here. Please note that the transmission power "
+                  .. "values include the antenna gain where available, but there are many devices "
+                  .. "for which the gain is unavailable or inaccurate.<br /><br />"
+                  .. "&raquo;Nighttime peace&laquo;, if activated, will <em>shut off</em> the client "
+                  .. "network between 22:00 and 06:00; all users therefore would be kicked off your "
+                  .. "node, whereas the mesh network is kept running. Please use with care, it is "
+                  .. "implemented so that, especially in the summer, people won't hang around all "
+                  .. "night in residential areas and cause disturbance to the neighbours."
 ))
 
 local radios = {}
