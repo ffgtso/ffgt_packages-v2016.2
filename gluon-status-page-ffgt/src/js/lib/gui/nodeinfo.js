@@ -44,7 +44,7 @@ define(["lib/helper"], function (Helper) {
       dlEntry(list, nodeInfo, "software.fastd.enabled", "Mesh-VPN")
       dlEntry(list, nodeInfo, "software.autoupdater.enabled", "Automatische Updates")
       dlEntry(list, nodeInfo, "software.autoupdater.branch", "Branch")
-      dlEntry(list, nodeInfo, "location.latitudes", "LAT")
+      dlEntry(list, nodeInfo, "location.latitude", "LAT")
       dlEntry(list, nodeInfo, "location.longitude", "LON")
 
       el.appendChild(list)
