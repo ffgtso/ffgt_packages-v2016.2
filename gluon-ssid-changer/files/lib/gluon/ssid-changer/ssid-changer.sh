@@ -23,7 +23,7 @@ OFFLINE_SSID="${OFFLINE_PREFIX}`/bin/cat /lib/gluon/core/sysconfig/primary_mac |
 #is there an active gateway?
 GATEWAY_TQ=$(batctl gwl | grep "^=>" | awk -F '[()]' '{print $2}' | tr -d " ") # grep the connection quality of the currently used gateway
 
-if [ ! $GATEWAY_TQ ]; # if there is no gateway there will be errors in the following if clauses
+if [ "X$GATEWAY_TQ" == "X" ]; # if there is no gateway there will be errors in the following if clauses
 then
 	GATEWAY_TQ=0 # just an easy way to get a valid value if there is no gateway
 fi
@@ -42,14 +42,15 @@ then
 		CURRENT_SSID=`grep "^ssid=$OFFLINE_SSID" $HOSTAPD | cut -d"=" -f2`
 		if [ "$CURRENT_SSID" == "$OFFLINE_SSID" ]
 		then
-			logger -s -t "gluon-offline-ssid" -p 5 "TQ is $GATEWAY_TQ, SSID is $CURRENT_SSID, change to $ONLINE_SSID" # write info to syslog
+			logger -s -t "gluon-ssid-changer" -p 5 "TQ is $GATEWAY_TQ, SSID is $CURRENT_SSID, change to $ONLINE_SSID" # write info to syslog
 			sed -i "s~^ssid=$CURRENT_SSID~ssid=$ONLINE_SSID~" $HOSTAPD
 			if [ -e /tmp/node_is_offline ]; then
 			    /bin/rm /tmp/node_is_offline
 			fi
 			HUP_NEEDED=1 # HUP here would be to early for dualband devices
 		else
-			echo "There is something wrong, did not find SSID $ONLINE_SSID or $OFFLINE_SSID"
+			logger -s -t "gluon-ssid-changer" -p 5 "There is something wrong (1): did neither find SSID $ONLINE_SSID nor $OFFLINE_SSID"
+
 		fi
 	done
 fi
@@ -69,14 +70,14 @@ then
 			CURRENT_SSID="$(grep "^ssid=$ONLINE_SSID" $HOSTAPD | cut -d"=" -f2)"
 			if [ "$CURRENT_SSID" == "$ONLINE_SSID" ]
 			then
-				logger -s -t "gluon-offline-ssid" -p 5 "TQ is $GATEWAY_TQ, SSID is $CURRENT_SSID, change to $OFFLINE_SSID"
+				logger -s -t "gluon-ssid-changer" -p 5 "TQ is $GATEWAY_TQ, SSID is $CURRENT_SSID, change to $OFFLINE_SSID"
 				sed -i "s~^ssid=$ONLINE_SSID~ssid=$OFFLINE_SSID~" $HOSTAPD
 				HUP_NEEDED=1 # HUP here would be too early for dualband devices
 				touch /tmp/node_is_offline
 			fi
 
 			else
-				echo "There is something wrong: did neither find SSID '$ONLINE_SSID' nor '$OFFLINE_SSID'"
+				logger -s -t "gluon-ssid-changer" -p 5 "There is something wrong (2): did neither find SSID $ONLINE_SSID nor $OFFLINE_SSID"
 			fi
 		done
 	fi
