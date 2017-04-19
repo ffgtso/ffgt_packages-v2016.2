@@ -6,7 +6,7 @@ PKG_RELEASE:=1
 
 PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
 
-include ../../../package/gluon.mk
+include $(GLUONDIR)/include/package.mk
 
 define Package/gluon-radv-filterd
   SECTION:=gluon
