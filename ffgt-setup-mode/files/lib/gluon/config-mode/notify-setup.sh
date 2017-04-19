@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! -e /tmp/run/setup-data-sent ]; then
+if [ ! -e /tmp/run/setup-data-sent -o $# -gt 0 ]; then
  isconfigured="`/sbin/uci get gluon-setup-mode.@setup_mode[0].configured`"
  setupifmissing="`/sbin/ifconfig br-setup >/dev/null 2>&1 ; echo $?`"
  if [ "${isconfigured}" != "1" -o "${setupifmissing}" != "1" ]; then
