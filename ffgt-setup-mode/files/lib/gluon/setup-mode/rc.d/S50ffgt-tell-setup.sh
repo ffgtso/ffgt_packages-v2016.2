@@ -3,11 +3,6 @@
 
 START=50
 
-# Run multiple time, in case the User forgot to re-plug blue=>yellow ...
-((sleep 240 ; /lib/gluon/config-mode/notify-setup.sh)&)
-((sleep 120 ; /lib/gluon/config-mode/notify-setup.sh)&)
-((sleep 90 ; /lib/gluon/config-mode/notify-setup.sh)&)
-((sleep 60 ; /lib/gluon/config-mode/notify-setup.sh)&)
-((sleep 30 ; /lib/gluon/config-mode/notify-setup.sh)&)
-((sleep 15 ; /lib/gluon/config-mode/notify-setup.sh)&)
+# Run every 15 seconds ...
 /lib/gluon/config-mode/notify-setup.sh
+((sleep 15 ; /lib/gluon/setup-mode/rc.d/S50ffgt-tell-setup.sh)&)
