@@ -113,10 +113,6 @@ local function get_addresses(radio)
   return io.lines('/sys/class/ieee80211/' .. phy .. '/addresses')
 end
 
-local function get_wan_address(interface)
-  return io.lines("/sys/class/net/" .. interface .. "/address")
-end
-
 -- Generates a (hopefully) unique MAC address
 -- The parameter defines the ID to add to the MAC address
 --
@@ -136,9 +132,8 @@ function generate_mac(i)
   local m1, m2, m3, m4, m5, m6 = string.match(hashed, '(%x%x)(%x%x)(%x%x)(%x%x)(%x%x)(%x%x)')
 
   if i == 0 then
-    local wan_ifname=sysconfig.wan_ifname
-    if wan_ifname and wan_ifname != "" and wan_ifname != "nil" then
-      return get_wan_address(wan_ifname)
+    if sysconfig.wan_ifname then
+      return lutil.trim(fs.readfile('/sys/class/net/' .. sysconfig.wan_ifname .. '/address'))
     end
   end
 
