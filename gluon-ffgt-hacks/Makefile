@@ -34,6 +34,7 @@ define Package/gluon-ffgt-hacks/install
 	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
 	/bin/rm $(1)/lib/gluon/setup-mode/rc.d/S20network
 	/bin/rm $(1)/lib/gluon/setup-mode/rc.d/S60dnsmasq
+	/bin/mv $(1)/lib/lua/gluon/util-ffgt.lua $(1)/lib/lua/gluon/util.lua
 endef
 
 $(eval $(call BuildPackage,gluon-ffgt-hacks))
