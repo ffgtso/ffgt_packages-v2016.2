@@ -11,6 +11,6 @@ if [ -e /lib/gluon/setup-mode/rc.d/S60dnsmasq  ]; then
  /bin/echo -e "#!/bin/sh\nexit 0\n" >/lib/gluon/setup-mode/rc.d/S60dnsmasq
 fi
 
-if [ -e /lib/lua/gluon/util-ffgt.lua ]; then
-  /bin/mv /lib/lua/gluon/util-ffgt.lua /lib/lua/gluon/util.lua
+if [ -e /usr/lib/lua/gluon/util-ffgt.lua ]; then
+  /bin/mv /usr/lib/lua/gluon/util-ffgt.lua /usr/lib/lua/gluon/util.lua
 fi
