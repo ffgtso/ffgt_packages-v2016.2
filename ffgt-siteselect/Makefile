@@ -39,9 +39,11 @@ define Package/ffgt-siteselect/install
 	GLUON_SITE_CONFIG=./files/lib/gluon/siteselect/rhw.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/rhw.json
 	GLUON_SITE_CONFIG=./files/lib/gluon/siteselect/gto.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/gto.json
 	GLUON_SITE_CONFIG=./files/lib/gluon/siteselect/gt8.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/gt8.json
+	GLUON_SITE_CONFIG=./files/lib/gluon/siteselect/gut.conf lua -e 'print(require("cjson").encode(assert(dofile("$(GLUONDIR)/scripts/site_config.lua"))))' > $(1)/lib/gluon/sitefiles/gut.json
 	$(CP) ./files/* $(1)/
-	rm -rf $(1)/lib/gluon/siteselect/
 	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
+	# Remove the just now copied source .conf files. FIXME or normal cleanup?
+	rm -rf $(1)/lib/gluon/siteselect
 endef
 
 $(eval $(call BuildPackage,ffgt-siteselect))

@@ -23,6 +23,11 @@ local srcfile
 -- We now only make sure site_select IS set, and copy the proper one
 -- to /lib/gluon/site.conf, just in case.
 
+-- As we run /lib/gluon/site-upgrade in the end, which runs all /lib/gluon/upgrade/*
+-- scripts (i. e. us as well), make sure we only run once at a time ;)
+--
+-- Touch a lock file, then run /lib/gluon/site-upgrade and skip running this script
+-- while we wait for /lib/gluon/site-upgrade to finish.
 if not fs.access("/tmp/site-upgrade.lock") then
   os.execute('/bin/touch /tmp/site-upgrade.lock')
   newcommunity=c:get_first("gluon-node-info", "location", "siteselect")
@@ -50,18 +55,13 @@ if not fs.access("/tmp/site-upgrade.lock") then
     os.execute(string.format("/sbin/uci set gluon-node-info.@location[0].siteselect=%c%s%c 2>/dev/null", 39, newcommunity, 39))
     os.execute(string.format("/sbin/uci commit gluon-node-info 2>/dev/null"))
   end
+  -- If this didn't fix it, as we might not have IP connectivity yet, leave it to the site-select cron job.
 
-  -- If this didn't fixed it, as we might not have IP connectivity yet, leave it to the site-select cron job.
-
-  os.execute("logger 'Updating system-wide site.conf on sysupgrade'")
+  os.execute("logger 'Updating system-wide site.json on sysupgrade'")
   cmdline=string.format('/sbin/uci get siteselect.%s.path', newcommunity)
   srcfile=string.gsub(sys.exec(cmdline), "\n", "")
   os.execute(string.format("logger 'Using %s for site_select %s'", srcfile, newcommunity))
   os.execute(string.format("/bin/cp %s /lib/gluon/site.json", srcfile))
-  -- Should not be necessary anymore, as per gluon-site_config, the site-select one was used already.
-  -- os.execute('/lib/gluon/upgrade/400-mesh-vpn-fastd')
-  -- os.execute('/lib/gluon/site-upgrade')
-  -- os.execute('/etc/init.d/fastd restart')
-
+  os.execute('/lib/gluon/site-upgrade')
   os.execute('/bin/rm -f /tmp/site-upgrade.lock')
 end

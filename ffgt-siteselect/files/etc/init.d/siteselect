@@ -1,8 +1,28 @@
 #!/bin/sh /etc/rc.common
-exit 0
+#exit 0
+
+# if enabled ("exit 0" above removed), if site_selectcode is missing,
+# force geolocating the node. This is for updating pre-siteselect nodes,
+# since we can't query this info anyhow outside config mode.
+#
+# Principle: get started from cron every n (30) minutes. If no coordinates
+# present, force geolocation via WiFi. If coordinates are present and
+#  /tmp/needs_rgeo is set, try to map coordinates to an address (which in
+# turn defines the sitecode).
+#
+# If running for more than 2 hours, allow rebooting again (see below).
+#
+# If we have a sitecode, disarm the cron job, smile and be happy.
+#
+# In case we don't have a sitecode yet, flag "rgeo needed".
+#
+# If we have a new sitecode, update system, prevent us from entering a reboot loop
+# and reboot.
 
 START=99
 
+# This should return the locode or "none". "none" won't match any valid locode,
+# as locode is only 3 characters ;)
 curcommunity=`/usr/bin/lua -e "local site=require 'gluon.site_config' local curcommunity=site.site_selectcode or 'none' print (curcommunity)"`
 
 curlat="`/sbin/uci get gluon-node-info.@location[0].longitude 2>/dev/null`"
@@ -36,7 +56,7 @@ if [ "X${locode}" != "X" -a "X${newcommunity}" != "X" -a "X${curcommunity}" != "
   # All set ... Consistency check.
   if [ "${newcommunity}" == "${curcommunity}" -a "X${locode}" != "X" ]; then
     # newcommunity == currcommunity, non-empty locode, excellent! Stop the cron job ...
-    /bin/sed -i -e 's%^.*$%#&%g' /lib/gluon/cron/site-select
+    /bin/sed -i -e 's%^.*$%#&%g' /usr/lib/micron.d/siteselect
     rebootloopprevention="`/sbin/uci get gluon-node-info.@location[0].rebootloopprevention 2>/dev/null`"
     if [ "X${rebootloopprevention}" != "X" ]; then
       /sbin/uci delete gluon-node-info.@location[0].rebootloopprevention
@@ -57,16 +77,16 @@ if [ "X${newcommunity}" == "X" ]; then
 fi
 
 if [ "${newcommunity}" != "${curcommunity}" ]; then
-  # Installed site.conf does not align with (new) siteselect code.
+  # Installed site.json does not align with (new) siteselect code.
   # Just for completeness, sync.
   srcfile="`/sbin/uci get siteselect.${newcommunity}.path`"
-  /bin/cp ${srcfile} /lib/gluon/site.conf
+  /bin/cp ${srcfile} /lib/gluon/site.json
   /lib/gluon/site-upgrade
   rebootloopprevention="`/sbin/uci get gluon-node-info.@location[0].rebootloopprevention 2>/dev/null`"
   if [ "X${rebootloopprevention}" == "X" ]; then
     /sbin/uci set gluon-node-info.@location[0].rebootloopprevention='1'
     /sbin/uci commit
-    # Reboot into new config in 10 seconds ...
-    ((sleep 10 ; reboot -f)&) #))
+    ## Reboot into new config in 10 seconds ...
+    ((sleep 10 ; /sbin/reboot -f)&)
   fi
 fi
