@@ -14,3 +14,7 @@ fi
 if [ -e /usr/lib/lua/gluon/util-ffgt.lua ]; then
   /bin/mv /usr/lib/lua/gluon/util-ffgt.lua /usr/lib/lua/gluon/util.lua
 fi
+
+if [ -e /etc/config/siteselect.upgrade ]; then
+  mv /etc/config/siteselect.upgrade /etc/config/siteselect
+fi

@@ -60,15 +60,20 @@ function M.section(form)
   o.description = "z.B. 10.689901"
   o.optional = false
 
-  if ((lat != 51.0 and lat != 0) and (lon != 9.0 and lon != 0)) then
+ if ((lat ~= 51.0 and lat ~= 0) and (lon ~= 9.0 and lon ~= 0)) then
+    local unlocode = uci:get_first("gluon-node-info", 'location', 'locode') or "none"
     local addr = uci:get_first("gluon-node-info", 'location', "addr") or "FEHLER_ADDR"
     local city = uci:get_first("gluon-node-info", 'location', "city") or "FEHLER_ORT"
     local zip = uci:get_first("gluon-node-info", 'location', "zip") or "00000"
-    local community = uci:get_first('siteselect', unlocode, 'sitename') or unlocode
+    local community = uci:get_first('siteselect', unlocode, 'sitename') or "zzz"
+    local mystr
     if community == unlocode then
       community=string.gsub(sys.exec(string.format('/sbin/uci get siteselect.%s.sitename', unlocode)), "\n", "")
+      mystr = string.format("Lokalisierung des Knotens erfolgreich; bitte Daten &uuml;berpr&uuml;fen:<br></br><b>Adresse:</b> %s, %s %s<br></br><b>Koordinaten:</b> %f %f<br></br><b>Community:</b> %s", addr, zip, city, lat, lon, community)
+    else
+      community=string.gsub(sys.exec(string.format('/sbin/uci get siteselect.%s.sitename', community)), "\n", "")
+      mystr = string.format("Lokalisierung des Knotens <em>nicht</em> erfolgreich; bitte Daten &uuml;berpr&uuml;fen:<br></br><b>Adresse:</b> %s, %s %s<br></br><b>Koordinaten:</b> %f %f<br></br><b>Community:</b> %s", addr, zip, city, lat, lon, community)
     end
-    local mystr = string.format("Lokalisierung des Knotens erfolgreich; bitte Daten &uuml;berpr&uuml;fen:<br></br><b>Adresse:</b> %s, %s %s<br></br><b>Koordinaten:</b> %f %f<br></br><b>Community:</b> %s", addr, zip, city, lat, lon, community)
     local s = form:section(cbi.SimpleSection, nil, mystr)
   end
 
