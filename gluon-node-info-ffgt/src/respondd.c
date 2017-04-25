@@ -185,6 +185,11 @@ static struct json_object * respondd_provider_nodeinfo(void) {
 		if(wan_link) {
 			json_object_object_add(wan_link, "wan_link", gluonutil_wrap_and_free_string(gluonutil_read_line("/tmp/link_on_wan")));
 		}
+
+		wan_iptype = json_object_new_object();
+		if(wan_iptype) {
+			json_object_object_add(wan_link, "wan_iptype", gluonutil_wrap_and_free_string(gluonutil_read_line("/tmp/wan_ipfamily")));
+		}
 	}
 
 	uci_free_context(ctx);
