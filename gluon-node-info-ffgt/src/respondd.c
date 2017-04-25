@@ -152,7 +152,7 @@ static struct json_object * get_system(struct uci_context *ctx, struct uci_packa
 }
 
 static struct json_object * respondd_provider_nodeinfo(void) {
-	struct json_object *ret = json_object_new_object(), *wan_link;
+	struct json_object *ret = json_object_new_object(), *wan_link, *wan_iptype;
 
 	struct uci_context *ctx = uci_alloc_context();
 	ctx->flags &= ~UCI_FLAG_STRICT;
