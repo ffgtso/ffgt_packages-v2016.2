@@ -151,8 +151,37 @@ static struct json_object * get_system(struct uci_context *ctx, struct uci_packa
 	return ret;
 }
 
+static struct json_object * get_wan_linkstate(void) {
+	char *text = gluonutil_read_line("/tmp/link_on_wan");
+	char linkstate[20];
+
+	if (!text)
+		return NULL;
+
+	snprintf(linkstate, sizeof(linkstate), "%s", text);
+
+	free(text);
+
+	return json_object_new_string(linkstate);
+}
+
+static struct json_object * get_wan_iptype(void) {
+	char *text = gluonutil_read_line("/tmp/wan_ipfamily");
+	char waniptype[20];
+
+	if (!text)
+		return NULL;
+
+	snprintf(waniptype, sizeof(waniptype), "%s", text);
+
+	free(text);
+
+	return json_object_new_string(waniptype);
+}
+
+
 static struct json_object * respondd_provider_nodeinfo(void) {
-	struct json_object *ret = json_object_new_object(), *wan_link, *wan_iptype;
+	struct json_object *ret = json_object_new_object();
 
 	struct uci_context *ctx = uci_alloc_context();
 	ctx->flags &= ~UCI_FLAG_STRICT;
@@ -180,16 +209,16 @@ static struct json_object * respondd_provider_nodeinfo(void) {
 			json_object_object_add(ret, "locode", locode);
 
 		json_object_object_add(ret, "system", get_system(ctx, p));
+	}
 
-		wan_link = json_object_new_object();
-		if(wan_link) {
-			json_object_object_add(wan_link, "wan_link", gluonutil_wrap_and_free_string(gluonutil_read_line("/tmp/link_on_wan")));
-		}
+	struct json_object *wan_link = get_wan_linkstate();
+	if(wan_link) {
+		json_object_object_add(ret, "wan_link", wan_link);
+	}
 
-		wan_iptype = json_object_new_object();
-		if(wan_iptype) {
-			json_object_object_add(wan_link, "wan_iptype", gluonutil_wrap_and_free_string(gluonutil_read_line("/tmp/wan_ipfamily")));
-		}
+	struct json_object *wan_iptype = get_wan_iptype();
+	if(wan_iptype) {
+		json_object_object_add(ret, "wan_iptype", wan_iptype);
 	}
 
 	uci_free_context(ctx);
