@@ -47,7 +47,7 @@ define(["lib/helper"], function (Helper) {
       dlEntry(list, nodeInfo, "location.latitude", "LAT")
       dlEntry(list, nodeInfo, "location.longitude", "LON")
       dlEntry(list, nodeInfo, "wan_link", "WAN Port")
-      dlEntry(list, nodeInfo, "wan_type", "IP-Typ WAN")
+      dlEntry(list, nodeInfo, "wan_iptype", "IP-Typ WAN")
 
       el.appendChild(list)
     }
