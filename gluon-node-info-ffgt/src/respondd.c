@@ -152,7 +152,7 @@ static struct json_object * get_system(struct uci_context *ctx, struct uci_packa
 }
 
 static struct json_object * respondd_provider_nodeinfo(void) {
-	struct json_object *ret = json_object_new_object();
+	struct json_object *ret = json_object_new_object(), *wan_link;
 
 	struct uci_context *ctx = uci_alloc_context();
 	ctx->flags &= ~UCI_FLAG_STRICT;
@@ -181,7 +181,10 @@ static struct json_object * respondd_provider_nodeinfo(void) {
 
 		json_object_object_add(ret, "system", get_system(ctx, p));
 
-		json_object_object_add(wireless, "wan_link", gluonutil_wrap_and_free_string(gluonutil_read_line("/tmp/link_on_wan")));
+		wan_link = json_object_new_object();
+		if(wan_link) {
+			json_object_object_add(wan_link, "wan_link", gluonutil_wrap_and_free_string(gluonutil_read_line("/tmp/link_on_wan")));
+		}
 	}
 
 	uci_free_context(ctx);
