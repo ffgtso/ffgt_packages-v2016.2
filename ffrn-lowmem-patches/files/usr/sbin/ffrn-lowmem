@@ -3,17 +3,20 @@
 # only do something if less than 40megs of RAM
 RAMSIZE=`grep MemTotal /proc/meminfo | awk '{print $2}'`
 if [ $RAMSIZE -le 40000 ] ; then
-    
-    # start haveged in config mode
-    MODE=`uci get gluon-setup-mode.@setup_mode[0].enabled`
-    if [ $MODE == "1" ] ; then
-    	/etc/init.d/haveged start
-    elif [ -f /etc/rc.d/S13haveged ] ; then
-        # disable and stop haveged if enabled and not in config mode                                                                                 
-        /etc/init.d/haveged disable
-	    /etc/init.d/haveged stop
-    fi
+  # start haveged in config mode
+  MODE=`uci get gluon-setup-mode.@setup_mode[0].enabled`
+  if [ "$MODE" == "1" ] ; then
+    /etc/init.d/haveged start
+  elif [ -f /etc/rc.d/S13haveged ] ; then
+    # disable and stop haveged if enabled and not in config mode
+    /etc/init.d/haveged disable
+    /etc/init.d/haveged stop
+  fi
 
+  # Kept for reference, but for now don't change this without having a global
+  # kill-switch for this feature. For FFRN it seems to work, for FFS not, so
+  # FFGTSO won't experiment for now. See https://forum.ffrn.de/t/ffrn-lowmem-patches/1551/7
+  if [ 0 -eq 1 ]; then
     # tweak some sysctls
     /sbin/sysctl -w net.ipv6.neigh.default.gc_interval=60
     /sbin/sysctl -w net.ipv6.neigh.default.gc_stale_time=120
@@ -29,5 +32,6 @@ if [ $RAMSIZE -le 40000 ] ; then
     /sbin/sysctl -w vm.dirty_background_ratio=5
     /sbin/sysctl -w vm.dirty_ratio=30
     /sbin/sysctl -w vm.dirty_expire_centisecs=0
+  fi
 fi
 
