@@ -128,14 +128,20 @@ end
 function generate_mac(i)
   if i > 7 or i < 0 then return nil end -- max allowed id (0b111)
 
+  local system = uci:get_first('system', 'system')
+  local staticwanmac = uci:get('system', system, 'staticwanmac')
   local hashed = string.sub(hash.md5(sysconfig.primary_mac), 0, 12)
   local m1, m2, m3, m4, m5, m6 = string.match(hashed, '(%x%x)(%x%x)(%x%x)(%x%x)(%x%x)(%x%x)')
 
-  -- if i == 0 then
-  --   if sysconfig.wan_ifname then
-  --     return lutil.trim(fs.readfile('/sys/class/net/' .. sysconfig.wan_ifname .. '/address'))
-  --   end
-  -- end
+  if i == 0 then
+    if staticwanmac then
+      return staticwanmac
+    -- else
+    --   if sysconfig.wan_ifname then
+    --     return lutil.trim(fs.readfile('/sys/class/net/' .. sysconfig.wan_ifname .. '/address'))
+    --   end
+    end
+  end
 
   m1 = tonumber(m1, 16)
   m6 = tonumber(m6, 16)
