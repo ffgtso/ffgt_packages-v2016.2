@@ -11,7 +11,7 @@ if [ $RAMSIZE -le 40000 ] ; then
     elif [ -f /etc/rc.d/S13haveged ] ; then
         # disable and stop haveged if enabled and not in config mode                                                                                 
         /etc/init.d/haveged disable
-	/etc/init.d/haveged stop
+	    /etc/init.d/haveged stop
     fi
 
     # tweak some sysctls
