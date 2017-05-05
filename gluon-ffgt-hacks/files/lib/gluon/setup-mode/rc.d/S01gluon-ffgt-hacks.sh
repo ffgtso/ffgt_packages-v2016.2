@@ -18,3 +18,7 @@ fi
 if [ -e /etc/config/siteselect.upgrade ]; then
   mv /etc/config/siteselect.upgrade /etc/config/siteselect
 fi
+
+if [ -e /lib/gluon/upgrade/320-setup-ifname-ffgt ]; then
+  mv /lib/gluon/upgrade/320-setup-ifname-ffgt /lib/gluon/upgrade/320-setup-ifname
+fi
