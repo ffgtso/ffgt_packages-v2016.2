@@ -35,7 +35,7 @@ fi
 if [ $GATEWAY_TQ -gt $UPPER_LIMIT ]; then
 	echo "Gateway TQ is $GATEWAY_TQ node is online"
 	for HOSTAPD in $(ls /var/run/hostapd-phy*); do # check status for all physical devices
-		CURRENT_SSID=`grep "^ssid=$ONLINE_SSID" $HOSTAPD | cut -d"=" -f2`
+		CURRENT_SSID=`grep "^ssid=$ONLINE_SSID" $HOSTAPD | cut -d"=" -f2 | uniq`
 		if [ "$CURRENT_SSID" == "$ONLINE_SSID" ]; then
 			echo "SSID $CURRENT_SSID is correct, noting to do"
 			HUP_NEEDED=0
@@ -62,7 +62,7 @@ then
 	echo "Gateway TQ is $GATEWAY_TQ node is considered offline"
 	if [ $(expr $(date "+%s") / 60 % $MINUTES) -eq 0 ]; then
 		for HOSTAPD in $(ls /var/run/hostapd-phy*); do # check status for all physical devices
-			CURRENT_SSID="$(grep "^ssid=$OFFLINE_SSID" $HOSTAPD | cut -d"=" -f2)"
+			CURRENT_SSID="$(grep "^ssid=$OFFLINE_SSID" $HOSTAPD | cut -d"=" -f2 | uniq)"
 			if [ "$CURRENT_SSID" == "$OFFLINE_SSID" ]; then
 			    if [ $NOW -gt $REBOOT_TIME ]; then
 			        logger -s -t "gluon-ssid-changer" -p 5 "Offline for too long; trying reboot to compensate"
