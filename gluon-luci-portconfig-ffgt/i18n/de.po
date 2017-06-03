@@ -35,4 +35,4 @@ msgid "WAN connection"
 msgstr "WAN-Verbindung"
 
 msgid "Bridge WAN and LAN"
-msgstr "LAN- und WAN-Ports zusammenführen"
+msgstr "WAN- und LAN-Ports zusammenführen"

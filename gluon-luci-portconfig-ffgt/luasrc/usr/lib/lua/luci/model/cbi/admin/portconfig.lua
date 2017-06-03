@@ -15,6 +15,7 @@ $Id$
 local uci = luci.model.uci.cursor()
 local lutil = require 'luci.util'
 local sysconfig = require 'gluon.sysconfig'
+local platform = require 'gluon.platform'
 
 local wan = uci:get_all("network", "wan")
 local wan6 = uci:get_all("network", "wan6")
@@ -94,7 +95,7 @@ if sysconfig.lan_ifname then
   o.rmempty = false
 end
 
-if platform.match('ar71xx', 'generic', {'tl-wr841n-v9', 'tl-wr841n-v10', 'tl-wr841n-v11', 'tl-wr1043nd-v2', 'tl-wr1043nd-v3', 'tl-wr1043nd-v4', 'tl-wr842n-v3'}) then
+if platform.match('ar71xx', 'generic', {'tl-wr841n-v9', 'tl-wr841n-v10', 'tl-wr841n-v11', 'tl-wr841n-v12', 'tl-wr1043nd-v2', 'tl-wr1043nd-v3', 'tl-wr1043nd-v4', 'tl-wr842n-v3'}) then
   if sysconfig.lan_ifname then
     o = s:option(Flag, "lan_wan_bridge", translate("Bridge WAN and LAN"))
     o.default = uci:get_bool("network", "wan", "bridge_lan") and o.enabled or o.disabled
@@ -150,7 +151,7 @@ function f.handle(self, state, data)
         doit(uci, "network", "client", "ifname", lanif)
       end
 
-      if platform.match('ar71xx', 'generic', {'tl-wr841n-v9', 'tl-wr841n-v10', 'tl-wr841n-v11', 'tl-wr1043nd-v2', 'tl-wr1043nd-v3', 'tl-wr1043nd-v4', 'tl-wr842n-v3'}) then
+      if platform.match('ar71xx', 'generic', {'tl-wr841n-v9', 'tl-wr841n-v10', 'tl-wr841n-v11', 'tl-wr841n-v12', 'tl-wr1043nd-v2', 'tl-wr1043nd-v3', 'tl-wr1043nd-v4', 'tl-wr842n-v3'}) then
         local doit
 
         uci:set("network", "wan", "bridge_lan", data.lan_wan_bridge)
