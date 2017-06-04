@@ -163,7 +163,7 @@ function f.handle(self, state, data)
               uci:set("network", "wan", "ifname", sysconfig.wan_ifname)
             else
               doit = uci.add_to_set
-              uci:set("network", "wan", "ifname", sysconfig.wan_ifname .. " " ..
+              uci:set("network", "wan", "ifname", sysconfig.wan_ifname .. " " .. sysconfig.lan_ifname)
             end
           else
             uci:set("network", "wan", "bridge_lan", '0')
