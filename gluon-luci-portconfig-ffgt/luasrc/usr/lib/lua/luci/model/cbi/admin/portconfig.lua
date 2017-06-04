@@ -100,8 +100,7 @@ if platform.match('ar71xx', 'generic', {'tl-wr841n-v9', 'tl-wr841n-v10', 'tl-wr8
     o = s:option(Flag, "lan_wan_bridge", translate("Bridge WAN and LAN"))
     o.default = uci:get_bool("network", "wan", "bridge_lan") and o.enabled or o.disabled
     o.rmempty = false
-    o:depends("mesh_wan", false)
-    o:depends("mesh_lan", false)
+    o:depends("mesh_lan", "")
   end
 end
 
@@ -154,19 +153,27 @@ function f.handle(self, state, data)
       if platform.match('ar71xx', 'generic', {'tl-wr841n-v9', 'tl-wr841n-v10', 'tl-wr841n-v11', 'tl-wr841n-v12', 'tl-wr1043nd-v2', 'tl-wr1043nd-v3', 'tl-wr1043nd-v4', 'tl-wr842n-v3'}) then
         local doit
 
-        uci:set("network", "wan", "bridge_lan", data.lan_wan_bridge)
+        if sysconfig.lan_ifname then
+          if data.lan_wan_bridge then
+            uci:set("network", "wan", "bridge_lan", data.lan_wan_bridge)
 
-        -- Make sure to unset this bridge if we enable mesh on LAN.
-        if data.lan_wan_bridge ~= '1' or data.mesh_lan == '1' then
-          doit = uci.remove_from_set
-          uci:set("network", "wan", "ifname", sysconfig.wan_ifname)
-        else
-          doit = uci.add_to_set
-          uci:set("network", "wan", "ifname", sysconfig.wan_ifname .. " " .. sysconfig.lan_ifname)
-        end
+            -- Make sure to unset this bridge if we enable mesh on LAN.
+            if data.lan_wan_bridge ~= '1' or data.mesh_lan == '1' then
+              doit = uci.remove_from_set
+              uci:set("network", "wan", "ifname", sysconfig.wan_ifname)
+            else
+              doit = uci.add_to_set
+              uci:set("network", "wan", "ifname", sysconfig.wan_ifname .. " " ..
+            end
+          else
+            uci:set("network", "wan", "bridge_lan", '0')
+            uci:set("network", "wan", "ifname", sysconfig.wan_ifname)
+            doit = uci.remove_from_set
+          end
 
-        for _, lanif in ipairs(lutil.split(sysconfig.lan_ifname, ' ')) do
-          doit(uci, "network", "client", "ifname", lanif)
+          for _, lanif in ipairs(lutil.split(sysconfig.lan_ifname, ' ')) do
+            doit(uci, "network", "client", "ifname", lanif)
+          end
         end
       end
     end
