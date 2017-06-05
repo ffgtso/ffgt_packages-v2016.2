@@ -136,6 +136,7 @@ function f.handle(self, state, data)
 
     uci:set("network", "mesh_wan", "auto", data.mesh_wan)
 
+    -- FIXME: this needs some more love and refactoring. -wusel, 2017-06-06
     if sysconfig.lan_ifname then
       uci:set("network", "mesh_lan", "auto", data.mesh_lan)
 
@@ -159,16 +160,16 @@ function f.handle(self, state, data)
 
             -- Make sure to unset this bridge if we enable mesh on LAN.
             if data.lan_wan_bridge ~= '1' or data.mesh_lan == '1' then
-              doit = uci.remove_from_set
+              doit = uci.add_to_set
               uci:set("network", "wan", "ifname", sysconfig.wan_ifname)
             else
-              doit = uci.add_to_set
+              doit = uci.remove_from_set
               uci:set("network", "wan", "ifname", sysconfig.wan_ifname .. " " .. sysconfig.lan_ifname)
             end
           else
             uci:set("network", "wan", "bridge_lan", '0')
             uci:set("network", "wan", "ifname", sysconfig.wan_ifname)
-            doit = uci.remove_from_set
+            doit = uci.add_from_set
           end
 
           for _, lanif in ipairs(lutil.split(sysconfig.lan_ifname, ' ')) do
