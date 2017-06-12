@@ -8,7 +8,7 @@ local gluon = require 'gluon.util'
 
 local configname = 'autoupdater-wifi-fallback'
 local force = false
-local min_uptime_secs = 3600
+local min_uptime_secs = 666
 local branch_name = uci:get('autoupdater','settings','branch')
 
 local function parse_args()
@@ -115,8 +115,16 @@ if not uci:get('autoupdater', branch_name) then
   os.exit(1)
 end
 
+if not force then
+  if fs.access("/lib/gluon/ssid-changer/ssid-changer.sh") and not fs.access("/tmp/node_is_offline") then
+    io.stderr:write("SSID-Changer found, Node isn't offline: cowardly skipping autoupdate per WiFi fallback\n")
+    os.exit(1)
+  end
+end
+
 if (force or preflight_check()) and not connectivity_check() then
-  local offset = 2 * 3600
+  -- was: 2 * 3600
+  local offset = 2 * 900
   local unreachable_since = os.time()
   if not uci:get('autoupdater-wifi-fallback', 'settings', 'unreachable_since') then
     uci:set(configname, 'settings', 'unreachable_since', unreachable_since)

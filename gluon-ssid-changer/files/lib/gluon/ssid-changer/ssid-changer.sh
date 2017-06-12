@@ -1,8 +1,15 @@
 #!/bin/sh
 
 if [ ! -e /usr/sbin/iw ]; then
- # No iw binary, so most likely no WiFi at all.
- exit 0
+    # No iw binary, so most likely no WiFi at all.
+    exit 0
+fi
+
+
+UPTIME="`awk < /proc/uptime '{printf("%d", $1);}'`"
+if [ ${UPTIME} -lt 300 ]; then
+    echo "Too early, uptime is less than 5 minutes."
+    exit 0
 fi
 
 # At first some Definitions:
@@ -27,13 +34,13 @@ REBOOT_TIME=`/usr/bin/expr $OFFLINE_START + 3660`
 #is there an active gateway?
 GATEWAY_TQ=$(batctl gwl | grep "^=>" | awk -F '[()]' '{print $2}' | tr -d " ") # grep the connection quality of the currently used gateway
 
-if [ "X$GATEWAY_TQ" == "X" ]; # if there is no gateway there will be errors in the following if clauses
+if [ "X${GATEWAY_TQ}" == "X" ]; # if there is no gateway there will be errors in the following if clauses
 then
 	GATEWAY_TQ=0 # just an easy way to get a valid value if there is no gateway
 fi
 
 if [ $GATEWAY_TQ -gt $UPPER_LIMIT ]; then
-	echo "Gateway TQ is $GATEWAY_TQ node is online"
+	echo "Gateway TQ is ${GATEWAY_TQ}, node is online"
 	for HOSTAPD in $(ls /var/run/hostapd-phy*); do # check status for all physical devices
 		CURRENT_SSID=`grep "^ssid=$ONLINE_SSID" $HOSTAPD | cut -d"=" -f2 | uniq`
 		if [ "$CURRENT_SSID" == "$ONLINE_SSID" ]; then
@@ -59,7 +66,7 @@ fi
 
 if [ $GATEWAY_TQ -lt $LOWER_LIMIT ];
 then
-	echo "Gateway TQ is $GATEWAY_TQ node is considered offline"
+	echo "Gateway TQ is ${GATEWAY_TQ}; node is considered offline"
 	if [ $(expr $(date "+%s") / 60 % $MINUTES) -eq 0 ]; then
 		for HOSTAPD in $(ls /var/run/hostapd-phy*); do # check status for all physical devices
 			CURRENT_SSID="$(grep "^ssid=$OFFLINE_SSID" $HOSTAPD | cut -d"=" -f2 | uniq)"
