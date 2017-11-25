@@ -11,7 +11,10 @@ fi
 
 LIP="$(ip -o -4 addr show dev br-wan | awk '{printf("%s", substr($4, 1, index($4, "/")-1));}')"
 PRIMARYMAC="$(cat /lib/gluon/core/sysconfig/primary_mac | sed -e s/://g)"
-wget -q -O /tmp/l2tp.state "http://l2tp-gut.4830.org/l2tp.php?primarymac=$PRIMARYMAC"
+X=$(cat /lib/gluon/core/sysconfig/primary_mac | cut -d ":" -f 6 )
+LOCALPORT=$(printf %d 0x$X)
+LOCALPORT=$(expr 10000 + $LOCALPORT)
+/sbin/start-stop-daemon -c root:gluon-fastd -S -x wget -- -q -O /tmp/l2tp.state "http://l2tp-gut.4830.org/l2tp.php?primarymac=$PRIMARYMAC&port=$LOCALPORT)"
 grep ^OK /tmp/l2tp.state >/dev/null 2>/dev/null
 if [ $? -ne 0 ]; then
  logger "L2TP setup failed."
@@ -30,7 +33,7 @@ LID="$(cut -d ' ' -f 5 </tmp/l2tp.state)"
 
 cat <<eof >/tmp/l2tp-${PRIMARYMAC}.up
 #!/bin/sh
-ip l2tp add tunnel tunnel_id $SID peer_tunnel_id $SID encap udp udp_sport $PORT udp_dport $PORT local $LIP remote $RIP || true
+ip l2tp add tunnel tunnel_id $SID peer_tunnel_id $SID encap udp udp_sport $LOCALPORT udp_dport $PORT local $LIP remote $RIP || true
 ip l2tp add session name El2tp tunnel_id $SID session_id $SID peer_session_id $SID  || true
 ip link set El2tp multicast on || true
 ip link set El2tp mtu 1500 || true
