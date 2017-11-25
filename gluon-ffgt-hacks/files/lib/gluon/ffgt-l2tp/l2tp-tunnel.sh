@@ -9,6 +9,8 @@ else
  exit 0
 fi
 
+
+ip -6 route add
 LIP="$(ip -o -4 addr show dev br-wan | awk '{printf("%s", substr($4, 1, index($4, "/")-1));}')"
 PRIMARYMAC="$(cat /lib/gluon/core/sysconfig/primary_mac | sed -e s/://g)"
 X=$(cat /lib/gluon/core/sysconfig/primary_mac | cut -d ":" -f 6 )
@@ -30,6 +32,7 @@ SID="$(cut -d ' ' -f 2 </tmp/l2tp.state)"
 PORT="$(cut -d ' ' -f 3 </tmp/l2tp.state)"
 RIP="$(cut -d ' ' -f 4 </tmp/l2tp.state)"
 LID="$(cut -d ' ' -f 5 </tmp/l2tp.state)"
+PEERV6="$(cut -d ' ' -f 6 </tmp/l2tp.state)"
 
 cat <<eof >/tmp/l2tp-${PRIMARYMAC}.up
 #!/bin/sh
@@ -52,5 +55,19 @@ chmod +x /tmp/l2tp-${PRIMARYMAC}.down
 batctl if | grep El2tp >/dev/null 2>/dev/null
 if [ $? -eq 1 ]; then
  /tmp/l2tp-${PRIMARYMAC}.up
- /etc/init.d/fastd stop
+fi
+
+ip -6 addr show dev El2tp >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+ ping6 -q -c 5 ${PEERV6}%El2tp
+ if [ $? -eq 0]; then
+  /etc/init.d/fastd stop
+ else
+  if [ ! -e /var/run/restart_fastd ]; then
+    touch /var/run/restart_fastd
+  else
+    /etc/init.d/fastd start
+    /bin/rm /var/run/restart_fastd
+  fi
+ fi
 fi
