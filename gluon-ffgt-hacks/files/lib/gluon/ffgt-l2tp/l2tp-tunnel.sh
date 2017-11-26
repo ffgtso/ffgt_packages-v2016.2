@@ -12,6 +12,7 @@ fi
 
 LIP="$(ip -o -4 addr show dev br-wan | awk '{printf("%s", substr($4, 1, index($4, "/")-1));}')"
 PRIMARYMAC="$(cat /lib/gluon/core/sysconfig/primary_mac | sed -e s/://g)"
+LLIP=" $(cat /lib/gluon/core/sysconfig/primary_mac | awk '{gsub(":", "", $1); printf("fe80::%s:%sff:fe%s:%s", substr($1, 1, 4), substr($1, 5, 2), substr($1, 7, 2), substr($1, 9, 4));}')"
 X=$(cat /lib/gluon/core/sysconfig/primary_mac | cut -d ":" -f 6 )
 LOCALPORT=$(printf %d 0x$X)
 LOCALPORT=$(expr 10000 + $LOCALPORT)
@@ -43,6 +44,7 @@ ip l2tp add session name El2tp tunnel_id $SID session_id $SID peer_session_id $S
 ip link set El2tp multicast on || true
 ip link set El2tp mtu 1392 || true
 ip link set El2tp up || true
+ip addr add $LLIP/64 dev El2tp || true
 batctl if add El2tp || true
 eof
  chmod +x /tmp/l2tp-${PRIMARYMAC}.tmpup
