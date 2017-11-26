@@ -15,8 +15,8 @@ PRIMARYMAC="$(cat /lib/gluon/core/sysconfig/primary_mac | sed -e s/://g)"
 X=$(cat /lib/gluon/core/sysconfig/primary_mac | cut -d ":" -f 6 )
 LOCALPORT=$(printf %d 0x$X)
 LOCALPORT=$(expr 10000 + $LOCALPORT)
-RIP=${L2TPGWIP4}
 SID="$(echo $PRIMARYMAC | awk '{printf("%d", "0x" substr($1, 9,4));}')"
+PORT=10000
 
 if [ ! -e /tmp/l2tp-${PRIMARYMAC}.l2tpgwip4 ]; then
  L2TPGWIP4=$(nslookup ${L2TPGW} | awk '/^Name:/ {doparse=1; next;} /^Address/ {if(doparse!=1) next; if(index($3, ":")) next; ip=$3;} END{printf("%s\n", ip);}')
@@ -28,6 +28,8 @@ if [ ! -e /tmp/l2tp-${PRIMARYMAC}.l2tpgwip4 ]; then
 else
  L2TPGWIP4=$(cat /tmp/l2tp-${PRIMARYMAC}.l2tpgwip4)
 fi
+
+RIP=${L2TPGWIP4}
 
 # Due to CGN/ATFR (DS-Lite), we can't predict our exit port; therefore we
 # need to get the target IP upfront, setup a tunnel as we intend to do and
@@ -54,7 +56,7 @@ eof
  /bin/sh /tmp/l2tp-${PRIMARYMAC}.tmpup
 fi
 
-wget -q -O /tmp/l2tp.state "http://${L2TPGWIP4}/l2tp.php?primarymac=$PRIMARYMAC&port=$LOCALPORT)"
+wget -q -O /tmp/l2tp.state "http://${L2TPGWIP4}/l2tp.php?primarymac=$PRIMARYMAC&port=$LOCALPORT"
 grep ^OK /tmp/l2tp.state >/dev/null 2>/dev/null
 if [ $? -ne 0 ]; then
  logger "L2TP setup failed."
