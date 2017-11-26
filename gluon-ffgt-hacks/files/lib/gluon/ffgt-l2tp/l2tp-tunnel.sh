@@ -10,6 +10,14 @@ else
  exit 0
 fi
 
+LIP="$(ip -o -4 addr show dev br-wan | awk '{printf("%s", substr($4, 1, index($4, "/")-1));}')"
+PRIMARYMAC="$(cat /lib/gluon/core/sysconfig/primary_mac | sed -e s/://g)"
+X=$(cat /lib/gluon/core/sysconfig/primary_mac | cut -d ":" -f 6 )
+LOCALPORT=$(printf %d 0x$X)
+LOCALPORT=$(expr 10000 + $LOCALPORT)
+RIP=${L2TPGWIP4}
+SID="$(echo $PRIMARYMAC | awk '{printf("%d", "0x" substr($1, 9,4));}')"
+
 if [ ! -e /tmp/l2tp-${PRIMARYMAC}.l2tpgwip4 ]; then
  L2TPGWIP4=$(nslookup ${L2TPGW} | awk '/^Name:/ {doparse=1; next;} /^Address/ {if(doparse!=1) next; if(index($3, ":")) next; ip=$3;} END{printf("%s\n", ip);}')
  if [ ! -z ${L2TPGWIP4} ]; then
@@ -20,14 +28,6 @@ if [ ! -e /tmp/l2tp-${PRIMARYMAC}.l2tpgwip4 ]; then
 else
  L2TPGWIP4=$(cat /tmp/l2tp-${PRIMARYMAC}.l2tpgwip4)
 fi
-
-LIP="$(ip -o -4 addr show dev br-wan | awk '{printf("%s", substr($4, 1, index($4, "/")-1));}')"
-PRIMARYMAC="$(cat /lib/gluon/core/sysconfig/primary_mac | sed -e s/://g)"
-X=$(cat /lib/gluon/core/sysconfig/primary_mac | cut -d ":" -f 6 )
-LOCALPORT=$(printf %d 0x$X)
-LOCALPORT=$(expr 10000 + $LOCALPORT)
-RIP=${L2TPGWIP4}
-SID="$(echo $PRIMARYMAC | awk '{printf("%d", "0x" substr($1, 9,4));}')"
 
 # Due to CGN/ATFR (DS-Lite), we can't predict our exit port; therefore we
 # need to get the target IP upfront, setup a tunnel as we intend to do and
@@ -62,8 +62,13 @@ if [ $? -ne 0 ]; then
   /bin/sh /tmp/l2tp-${PRIMARYMAC}.down
   /bin/rm /tmp/l2tp-${PRIMARYMAC}.*
  fi
- /etc/init.d/fastd restart
- echo "fastd" >/tmp/tunnelprotocol
+ if [ ! -e /sys/class/net/mesh-vpn/carrier ]; then
+  if [ -e /var/run/fastd.mesh_vpn.socket ]; then
+   /bin/rm /var/run/fastd.mesh_vpn.socket
+  fi
+  /etc/init.d/fastd restart
+  echo "fastd" >/tmp/tunnelprotocol
+ fi
  exit 0
 fi
 
