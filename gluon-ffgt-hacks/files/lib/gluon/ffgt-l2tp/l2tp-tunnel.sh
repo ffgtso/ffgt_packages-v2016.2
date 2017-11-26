@@ -117,7 +117,7 @@ fi
 ip -6 addr show dev El2tp >/dev/null 2>&1
 if [ $? -eq 0 ]; then
  ping6 -q -c 5 ${PEERV6}%El2tp
- if [ $? -eq 0]; then
+ if [ $? -eq 0 ]; then
   /etc/init.d/fastd stop
   echo "l2tp" >/tmp/tunnelprotocol
   if [ -e /var/run/restart_fastd ]; then
