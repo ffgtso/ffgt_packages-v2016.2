@@ -59,7 +59,7 @@ if [ ${runnow} -eq 1 ]; then
  fi
  if [ $didenablewifi == 1 ]; then
    /sbin/ifconfig ${SCANIF} down
-   didenablewifi =0
+   didenablewifi=0
  fi
  # On success only ...
  if [ -e /tmp/run/wifi-data-sent ]; then
