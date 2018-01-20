@@ -53,9 +53,17 @@ if [ ${runnow} -eq 1 ]; then
    didenablewifi=1
    sleep 5
   fi
-  /usr/bin/wget -q -O /dev/null "`/usr/sbin/iw dev ${SCANIF} scan | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
+  if [ ${IPVXPREFIX} == "ipv4." ]; then # v4 needs to gw via WAN; yes, it's ugly. FIXME?
+   /sbin/start-stop-daemon -c root:gluon-fastd -S -x /usr/bin/wget -- -q -O /dev/null "`/usr/sbin/iw dev ${SCANIF} scan | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
+  else
+   /usr/bin/wget -q -O /dev/null "`/usr/sbin/iw dev ${SCANIF} scan | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
+  fi
  else
-  /usr/bin/wget -q -O /dev/null "`cat /lib/gluon/ffgt-geolocate/iw-scan-dummy.data | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
+  if [ ${IPVXPREFIX} == "ipv4." ]; then # v4 needs to gw via WAN; yes, it's ugly. FIXME?
+   /sbin/start-stop-daemon -c root:gluon-fastd -S -x /usr/bin/wget -- -q -O /dev/null "`cat /lib/gluon/ffgt-geolocate/iw-scan-dummy.data | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
+  else
+   /usr/bin/wget -q -O /dev/null "`cat /lib/gluon/ffgt-geolocate/iw-scan-dummy.data | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
+  fi
  fi
  if [ $didenablewifi == 1 ]; then
    /sbin/ifconfig ${SCANIF} down
@@ -67,7 +75,11 @@ if [ ${runnow} -eq 1 ]; then
   if [ "X${curlat}" = "X" -o "X${mobile}" = "X1" -o ${forcerun} -eq 1 ]; then
    /bin/cat /dev/null >/tmp/geoloc.sh
    sleep 2
-   /usr/bin/wget -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/geoloc.php?list=me&node=$mac"
+   if [ ${IPVXPREFIX} == "ipv4." ]; then # v4 needs to gw via WAN; yes, it's ugly. FIXME?
+    /sbin/start-stop-daemon -c root:gluon-fastd -S -x /usr/bin/wget -- -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/geoloc.php?list=me&node=$mac"
+   else
+    /usr/bin/wget -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/geoloc.php?list=me&node=$mac"
+   fi
    if [ -e /tmp/geoloc.out ]; then
     # Actually, we might want to sanity check the reply, as it could be empty or worse ... (FIXME)
     haslocation="`/sbin/uci get gluon-node-info.@location[0] 2>/dev/null]`"
