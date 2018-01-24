@@ -15,7 +15,7 @@ define Package/ffgt-siteselect
   SECTION:=gluon
   CATEGORY:=Gluon
   TITLE:=Package for (automatic) selection of a site.conf file
-  DEPENDS:=+ffgt-geolocate
+  DEPENDS:=+ffgt-geolocate +lua
 endef
 
 define Build/Prepare
@@ -44,9 +44,6 @@ define Package/ffgt-siteselect/install
 	$(CP) $(PKG_BUILD_DIR)/luadest/* $(1)/
 	# Remove the just now copied source .conf files. FIXME or normal cleanup?
 	rm -rf $(1)/lib/gluon/siteselect
-	# FIXME: dirty hack around ".../root/etc/init.d/siteselect: line 26: /usr/bin/lua: No such file or directory"
-	touch $(1)/usr/bin/lua
-	touch $(1)/lib/gluon/ffgt-geolocate/rgeo.sh
 endef
 
 $(eval $(call BuildPackage,ffgt-siteselect))
