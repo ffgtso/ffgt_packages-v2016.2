@@ -1,11 +1,16 @@
 #!/bin/sh
-# This script is supposed to be run every 1-5 minutes via micron.d.
+# This script is supposed to be run every 5 minutes via micron.d.
 #
 # FIXME: do not uci commit all the time with is_mobile! That would kill the FLASH rather soonish :(
 #
-# Sent WiFi info once.
+# Sent WiFi info once per boot.
 # If is_mobile node, fetch location and fill in geoloc data.
 # If is_mobile, do this every 5 Minutes. Otherwise, it can be manually requested in geoloc.
+setupmode="`/sbin/uci get gluon-setup-mode.@setup_mode[0].enabled 2>/dev/null`"
+UPSECS=$(cut -d ' ' -f 1 /proc/uptime)
+UPSECS=$(printf %.0f $UPSECS)
+if [ $setupmode -eq 0 -a $UPSECS -lt 300 ]; then exit 0 ; fi
+# Need at least 5 mins (300 sec) of uptime for things to have settled.
 CURMIN=`/bin/date +%M`
 MODULO=`/usr/bin/expr ${CURMIN} % 5`
 mobile="`/sbin/uci get gluon-node-info.@location[0].is_mobile 2>/dev/null`"
@@ -21,10 +26,12 @@ if [ "$isconfigured" != "1" ]; then
 fi
 didenablewifi=0
 
+# Don't run if run already ...
 if [ -e /tmp/run/wifi-data-sent ]; then
  runnow=0
 fi
 
+# ... unless forced or ...
 if [ $# -eq 1 ]; then
   forcerun=1
   runnow=1
@@ -32,54 +39,48 @@ else
   forcerun=0
 fi
 
-if [ ${mobile} -eq 1 -a ${MODULO} -eq 0 ]; then
+# ... it's supposed to be a mobile device
+if [ ${mobile} -eq 1 ]; then
  runnow=1
 fi
 
+LASTOCTET=$(cut -d : -f6 /lib/gluon/core/sysconfig/primary_mac)
+DELAYSECS=$(printf %d 0x${LASTOCTET})
+
+if [ ${runnow} -eq 0 ]; then
+ exit 0
+fi
+
+## runnow == 1
 IPVXPREFIX="`/lib/gluon/ffgt-geolocate/ipv5.sh`"
 if [ "Y$IPVXPREFIX" == "Y" -o "$IPVXPREFIX" == "ipv5." ]; then
  logger "$0: IPv5 not implemented."
  exit 1
 fi
 
-if [ ${runnow} -eq 1 ]; then
- mac=`/sbin/uci get network.bat0.macaddr`
- # Fuuuu... iw might not be there. If so, let's fake it.
- if [ -e /usr/sbin/iw ]; then
-  SCANIF="`/usr/sbin/iw dev | /usr/bin/awk 'BEGIN{idx=1;} /Interface / {iface[idx]=$2; ifacemap[$2]=idx; idx++}; END{if(ifacemap["mesh1"]>0) {printf("mesh1\n");} else if(ifacemap["wlan1"]>0) {printf("wlan1\n");} else if(ifacemap["mesh0"]>0) {printf("mesh0\n");} else if(ifacemap["wlan0"]>0) {printf("wlan0\n");} else {printf("%s\n", iface[idx-1]);}}'`"
-  /usr/sbin/iw ${SCANIF} scan 2>/dev/null >/dev/null
-  if [ $? -ne 0 ]; then
-   /sbin/ifconfig ${SCANIF} up
-   didenablewifi=1
-   sleep 5
-  fi
-  if [ ${IPVXPREFIX} == "ipv4." ]; then # v4 needs to gw via WAN; yes, it's ugly. FIXME?
-   /sbin/start-stop-daemon -c root:gluon-fastd -S -x /usr/bin/wget -- -q -O /dev/null "`/usr/sbin/iw dev ${SCANIF} scan | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
-  else
-   /usr/bin/wget -q -O /dev/null "`/usr/sbin/iw dev ${SCANIF} scan | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
-  fi
- else
-  if [ ${IPVXPREFIX} == "ipv4." ]; then # v4 needs to gw via WAN; yes, it's ugly. FIXME?
-   /sbin/start-stop-daemon -c root:gluon-fastd -S -x /usr/bin/wget -- -q -O /dev/null "`cat /lib/gluon/ffgt-geolocate/iw-scan-dummy.data | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
-  else
-   /usr/bin/wget -q -O /dev/null "`cat /lib/gluon/ffgt-geolocate/iw-scan-dummy.data | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
-  fi
+mac=`/sbin/uci get network.bat0.macaddr`
+# Fuuuu... iw might not be there. If so, let's fake it.
+if [ -e /usr/sbin/iw ]; then
+ SCANIF="`/usr/sbin/iw dev | /usr/bin/awk 'BEGIN{idx=1;} /Interface / {iface[idx]=$2; ifacemap[$2]=idx; idx++}; END{if(ifacemap["mesh1"]>0) {printf("mesh1\n");} else if(ifacemap["wlan1"]>0) {printf("wlan1\n");} else if(ifacemap["mesh0"]>0) {printf("mesh0\n");} else if(ifacemap["wlan0"]>0) {printf("wlan0\n");} else {printf("%s\n", iface[idx-1]);}}'`"
+ /usr/sbin/iw ${SCANIF} scan 2>/dev/null >/dev/null
+ if [ $? -ne 0 ]; then
+  /sbin/ifconfig ${SCANIF} up
+  didenablewifi=1
+  sleep 5
  fi
+ /usr/bin/wget -q -O /dev/null "`/usr/sbin/iw dev ${SCANIF} scan | /usr/bin/awk -v mac=$mac -v ipv4prefix=$IPVXPREFIX -f /lib/gluon/ffgt-geolocate/preparse.awk`" && /bin/touch /tmp/run/wifi-data-sent
  if [ $didenablewifi == 1 ]; then
    /sbin/ifconfig ${SCANIF} down
    didenablewifi=0
  fi
+
  # On success only ...
  if [ -e /tmp/run/wifi-data-sent ]; then
   curlat="`/sbin/uci get gluon-node-info.@location[0].longitude 2>/dev/null`"
   if [ "X${curlat}" = "X" -o "X${mobile}" = "X1" -o ${forcerun} -eq 1 ]; then
    /bin/cat /dev/null >/tmp/geoloc.sh
    sleep 2
-   if [ ${IPVXPREFIX} == "ipv4." ]; then # v4 needs to gw via WAN; yes, it's ugly. FIXME?
-    /sbin/start-stop-daemon -c root:gluon-fastd -S -x /usr/bin/wget -- -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/geoloc.php?list=me&node=$mac"
-   else
-    /usr/bin/wget -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/geoloc.php?list=me&node=$mac"
-   fi
+   /usr/bin/wget -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/geoloc.php?list=me&node=$mac"
    if [ -e /tmp/geoloc.out ]; then
     # Actually, we might want to sanity check the reply, as it could be empty or worse ... (FIXME)
     haslocation="`/sbin/uci get gluon-node-info.@location[0] 2>/dev/null]`"
@@ -108,7 +109,9 @@ if [ ${runnow} -eq 1 ]; then
         hostname="${zip}-${adr}-${suffix}"
         #hostname="${zip}-freifunk-${nodeid}"
         /sbin/uci set system.@system[0].hostname="${hostname}"
-        /sbin/uci commit system
+        if [ ${mobile} -ne 1 ]; then # Only commit on non-mobile devices
+         /sbin/uci commit system
+        fi
        fi # "x${zip}"
       fi # $isconfigured -ne 1
      fi # ${mobile} -eq 1
