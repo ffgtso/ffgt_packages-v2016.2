@@ -1,10 +1,6 @@
 #!/bin/sh /etc/rc.common
 #exit 0
 
-# FIXME, -wusel, 2018-01-24:
-# Read file is in .../ffgt_packages-v2016.2/gluon-ffgt-hacks/files/lib/gluon/setup-mode/siteselect
-# due to odd build error otherwise.
-
 # if enabled ("exit 0" above removed), if site_selectcode is missing,
 # force geolocating the node. This is for updating pre-siteselect nodes,
 # since we can't query this info anyhow outside config mode.
@@ -27,7 +23,7 @@ START=99
 
 # This should return the locode or "none". "none" won't match any valid locode,
 # as locode is only 3 characters ;)
-###curcommunity=`/usr/bin/lua -e "local site=require 'gluon.site_config' local curcommunity=site.site_selectcode or 'none' print (curcommunity)"`
+curcommunity=`/usr/bin/lua -e "local site=require 'gluon.site_config' local curcommunity=site.site_selectcode or 'none' print (curcommunity)"`
 
 curlat="`/sbin/uci get gluon-node-info.@location[0].longitude 2>/dev/null`"
 RClat=$?
@@ -39,7 +35,7 @@ if [ $RClat -eq 1 -o $RCloc -eq 1 ]; then
   /bin/rm -f /tmp/needs_rgeo
 else
   if [ -e /tmp/needs_rgeo ]; then
-###    /lib/gluon/ffgt-geolocate/rgeo.sh
+    /lib/gluon/ffgt-geolocate/rgeo.sh
     /bin/rm -f /tmp/needs_rgeo
   fi
 fi
