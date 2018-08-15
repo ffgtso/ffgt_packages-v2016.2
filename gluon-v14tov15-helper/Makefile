@@ -7,7 +7,7 @@ PKG_SOURCE_URL:=https://github.com/viisauksena/gluon-v14tov15-helper.git
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
-include $(TOPDIR)/../package/gluon.mk
+include $(INCLUDE_DIR)/package.mk
 
 define Package/gluon-v14tov15-helper
   SECTION:=gluon
