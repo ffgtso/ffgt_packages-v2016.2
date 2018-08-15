@@ -1,9 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gluon-v14tov15-helper
-PKG_SOURCE_PROTO:=git
 PKG_VERSION:=3
-PKG_SOURCE_URL:=https://github.com/viisauksena/gluon-v14tov15-helper.git
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
