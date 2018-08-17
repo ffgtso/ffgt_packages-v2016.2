@@ -46,7 +46,7 @@ mac=`/sbin/uci get network.bat0.macaddr`
 curlat="`/sbin/uci get gluon-node-info.@location[0].latitude 2>/dev/null`"
 curlon="`/sbin/uci get gluon-node-info.@location[0].longitude 2>/dev/null`"
 if [ "X${curlat}" != "X" -a "X${curlon}" != "X" ]; then curlat=0; curlon=0; fi
-/usr/bin/wget -q -O /tmp/geoloc.out "http://setup.${IPVXPREFIX}4830.org/getcfg.php?node=${mac}&lat=${curlat}&lon=${curlon}"
+/usr/bin/wget -q -O /tmp/geoloc.out "http://setup.ipv6.4830.org/getcfg.php?node=${mac}&lat=${curlat}&lon=${curlon}"
 if [ -e /tmp/getcfg.out ]; then
  echo # grep CFG:  /tmp/getcfg.out >/dev/null && touch /tmp/run/gotcfg
 fi

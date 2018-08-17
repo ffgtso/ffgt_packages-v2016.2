@@ -1,2 +1,2 @@
-*/5 * * * * /lib/gluon/ffgt-geolocate/senddata.sh
+0 * * * * /lib/gluon/ffgt-geolocate/senddata.sh
 */15 * * * * /lib/gluon/ffgt-geolocate/getcfg.sh
