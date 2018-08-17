@@ -16,7 +16,7 @@ if [ ! -e /tmp/is_online ] ; then
   IPVXPREFIX="ipv4."
  fi
  if [ $USEIPV4 -eq 0 -a $USEIPV6 -eq 0 ]; then
-   echo "$0: IPv5 not implemented."
+   echo "$0: IPv5 not implemented." >/dev/stderr
    exit 1
  else
    echo "online with ${IPVXPREFIX}" >/tmp/is_online
